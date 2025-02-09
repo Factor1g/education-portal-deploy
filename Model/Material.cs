@@ -1,0 +1,11 @@
+﻿namespace Model
+{
+    public abstract class Material
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
+
+        public abstract void DisplayDetails();
+    }
+}
