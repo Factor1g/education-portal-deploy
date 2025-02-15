@@ -1,6 +1,9 @@
 ﻿using Application;
 using Console;
 using Data;
+using Data.Interfaces;
+using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace EducationPortal
@@ -42,7 +45,11 @@ namespace EducationPortal
             //    }
             //}
             IDataRepository dataRepository = new FileDataRepository();
-            IUserService userService = new UserService(dataRepository);
+            DbContext context = new EducationPortalContext();
+            IUserRepository userRepository = new UserRepository(context);
+            ICourseRepository courseRepository = new CourseRepository(context);
+         
+            IUserService userService = new UserService(dataRepository,userRepository,courseRepository);
             ICourseService courseService = new CourseServicecs(dataRepository);
             IMaterialService materialService = new MaterialService(dataRepository);
 
