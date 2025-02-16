@@ -7,7 +7,7 @@ using Model;
 
 namespace Data.Interfaces
 {
-    internal interface IMaterialRepository : IRepository<Material>
+    public interface IMaterialRepository : IRepository<Material>
     {
 
     }

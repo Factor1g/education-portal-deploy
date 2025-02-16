@@ -4,6 +4,9 @@ using Data;
 using Data.Interfaces;
 using Data.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace EducationPortal
@@ -44,16 +47,34 @@ namespace EducationPortal
             //            break;
             //    }
             //}
-            IDataRepository dataRepository = new FileDataRepository();
-            DbContext context = new EducationPortalContext();
-            IUserRepository userRepository = new UserRepository(context);
-            ICourseRepository courseRepository = new CourseRepository(context);
-         
-            IUserService userService = new UserService(dataRepository,userRepository,courseRepository);
-            ICourseService courseService = new CourseServicecs(dataRepository);
-            IMaterialService materialService = new MaterialService(dataRepository);
+            var services = new ServiceCollection()
+            .AddDbContext<EducationPortalContext>(options =>
+                options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=EducationPortalDB;Trusted_Connection=True;TrustServerCertificate=True;"))
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<ICourseService, CourseServicecs>()
+                .AddScoped<IMaterialService, MaterialService>()
+                .AddScoped<ISkillRepository, SkillRepository>()
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<IMaterialRepository, MaterialRepository>()
+                .AddScoped<ICourseRepository, CourseRepository>()
+                
 
-            Menu menu = new Menu(userService, courseService, materialService);
+                
+                .BuildServiceProvider();
+            //IDataRepository dataRepository = new FileDataRepository();
+            ////DbContext context = new EducationPortalContext();
+            //IUserRepository userRepository = new UserRepository(context);
+            //ICourseRepository courseRepository = new CourseRepository(context);
+         
+            //IUserService userService = new UserService(dataRepository,userRepository,courseRepository);
+            //ICourseService courseService = new CourseServicecs(dataRepository);
+            //IMaterialService materialService = new MaterialService(dataRepository);
+
+            var userService = services.GetService<IUserService>();
+            //var courseService = services.GetService<ICourseService>();
+            //var materialService = services.GetService<IMaterialService>();
+
+            Menu menu = new Menu(userService);
             menu.Start();
         }
     }

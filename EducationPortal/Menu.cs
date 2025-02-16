@@ -15,11 +15,10 @@ namespace Console
         private readonly IMaterialService _materialService;
         private User _loggedInUser;
 
-        public Menu(IUserService userService, ICourseService courseService, IMaterialService materialService)
+        public Menu(IUserService userService)
         {
             _userService = userService;
-            _courseService = courseService;
-            _materialService = materialService;
+            
         }
 
         public void Start()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Model;
 
 
@@ -11,10 +12,23 @@ namespace Data
 {
     public class EducationPortalContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public EducationPortalContext(DbContextOptions<EducationPortalContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=EducationPortalDB;Trusted_Connection=True;");
         }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=EducationPortalDB;Trusted_Connection=True;TrustServerCertificate=True;");
+        //}
+
+        public DbSet<User> Users { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Material> Materials { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<UserSkill> UserSkills { get; set; }
+        public DbSet<Video> Videos { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Article> Articles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

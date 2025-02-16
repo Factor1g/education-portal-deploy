@@ -10,7 +10,7 @@ namespace Data.Repositories
 {
     public class CourseRepository : EfBaseRepository<Course>, ICourseRepository
     {
-        public CourseRepository(DbContext context) : base(context)
+        public CourseRepository(EducationPortalContext context) : base(context)
         {
         }
     }

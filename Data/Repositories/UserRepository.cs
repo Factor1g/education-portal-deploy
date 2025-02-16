@@ -10,7 +10,7 @@ namespace Data.Repositories
 {
     public class UserRepository : EfBaseRepository<User>, IUserRepository
     {
-        public UserRepository(DbContext context) : base(context)
+        public UserRepository(EducationPortalContext context) : base(context)
         {
         }
 

@@ -11,7 +11,7 @@ namespace Data.Repositories
 {
     public class MaterialRepository : EfBaseRepository<Material>, IMaterialRepository
     {
-        public MaterialRepository(DbContext context) : base(context)
+        public MaterialRepository(EducationPortalContext context) : base(context)
         {
         }
     }

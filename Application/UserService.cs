@@ -12,13 +12,13 @@ namespace Application
     public class UserService : IUserService
     {
         
-        private IDataRepository _dataRepository;
+        //private IDataRepository _dataRepository;
         private IUserRepository _userRepository;
         private ICourseRepository _courseRepository;
 
-        public UserService(IDataRepository dataRepository, IUserRepository userRepository, ICourseRepository courseRepository)
+        public UserService( IUserRepository userRepository, ICourseRepository courseRepository)
         {
-            _dataRepository = dataRepository;
+            //_dataRepository = dataRepository;
             _userRepository = userRepository;
             _courseRepository = courseRepository;
         }        
