@@ -12,14 +12,15 @@ namespace Data
 {
     public class EducationPortalContext : DbContext
     {
-        public EducationPortalContext(DbContextOptions<EducationPortalContext> options) : base(options)
-        {
-        }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //public EducationPortalContext(DbContextOptions<EducationPortalContext> options) : base(options)
         //{
-        //    optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=EducationPortalDB;Trusted_Connection=True;TrustServerCertificate=True;");
+
         //}
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=EducationPortalDB;Trusted_Connection=True;TrustServerCertificate=True;");
+        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Course> Courses { get; set; }
@@ -32,23 +33,19 @@ namespace Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Many-to-Many: User <-> Course (Completed)
             modelBuilder.Entity<User>()
                 .HasMany(u => u.CompletedCourses)
                 .WithMany();
 
-            // Many-to-Many: User <-> Course (InProgress)
             modelBuilder.Entity<User>()
                 .HasMany(u => u.InProgressCourses)
                 .WithMany();
 
-            // One-to-Many: Course -> Materials
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Materials)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Many-to-Many: User <-> Skill (via UserSkill)
             modelBuilder.Entity<UserSkill>()
                 .HasKey(us => new { us.UserId, us.SkillId });
 
@@ -62,11 +59,9 @@ namespace Data
                 .WithMany()
                 .HasForeignKey(us => us.SkillId);
 
-            // Many-to-Many: Course <-> Materials
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Materials);                
 
-            // Many-to-Many: Course <-> Skills
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Skills)
                 .WithMany();

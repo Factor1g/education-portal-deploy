@@ -11,7 +11,7 @@ namespace Application
     {
         void CreateMaterial(Material material);
         void UpdateMaterial(Material material);
-        void DeleteMaterial(string title);
-        Material GetMaterial(string title);
+        void DeleteMaterial(int id);
+        Material GetMaterial(int id);
     }
 }

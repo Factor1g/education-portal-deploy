@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.Interfaces;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -10,31 +11,31 @@ namespace Application
 {
     public class MaterialService : IMaterialService
     {
-        private readonly IDataRepository _dataRepository;
+        private readonly IMaterialRepository _materialRepository;
 
-        public MaterialService(IDataRepository dataRepository)
+        public MaterialService(IMaterialRepository materialRepository)
         {
-            _dataRepository = dataRepository;
+            _materialRepository = materialRepository;
         }
 
         public void CreateMaterial(Material material)
         {
-            _dataRepository.AddMaterial(material);
+            _materialRepository.Insert(material);
         }
 
-        public void DeleteMaterial(string title)
+        public void DeleteMaterial(int id)
         {
-            _dataRepository.DeleteMaterial(title);
+            _materialRepository.Delete(id);
         }
 
-        public Material GetMaterial(string title)
+        public Material GetMaterial(int id)
         {
-            return _dataRepository.GetMaterial(title);
+            return _materialRepository.GetById(id);
         }
 
         public void UpdateMaterial(Material material)
         {
-            _dataRepository.UpdateMaterial(material);
+            _materialRepository.Update(material);
         }
     }
 }
