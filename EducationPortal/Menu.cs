@@ -20,6 +20,7 @@ namespace Console
             _userService = userService;
             _courseService = courseService;
             _materialService = materialService;
+            
         }
 
         public void Start()
@@ -59,7 +60,7 @@ namespace Console
             }
 
             while (true)
-            {
+            {                
                 System.Console.Clear();
                 System.Console.WriteLine("1. Create Course\n2. Update Course\n3. Delete Course\n4. View Courses\n5. Create Material\n6. Update Material\n7. Delete Material\n8. View Material\n9. Enroll in Course\n10. Exit");
                 var choice2 = System.Console.ReadLine();
@@ -94,13 +95,13 @@ namespace Console
         private void UpdateCourse()
         {
             System.Console.Write("Enter course name to update: ");
-            string name = System.Console.ReadLine();
-            var course = _courseService.GetCourse(name);
+            int name = int.Parse(System.Console.ReadLine());
+            var course = _courseService.GetById(name);
             if (course != null)
             {
                 System.Console.Write("Enter new description: ");
                 course.Description = System.Console.ReadLine();
-                _courseService.UpdateCourse(course);
+                _courseService.Update(course);
                 System.Console.WriteLine("Course updated successfully!");
                 System.Console.ReadLine();
             }
@@ -111,8 +112,8 @@ namespace Console
         private void DeleteCourse()
         {
             System.Console.Write("Enter course name to delete: ");
-            string name = System.Console.ReadLine();
-            _courseService.DeleteCourse(name);
+            int id = int.Parse(System.Console.ReadLine());
+            _courseService.Delete(id);
             System.Console.WriteLine("Course deleted successfully!");
             System.Console.ReadLine();
         }
@@ -141,8 +142,8 @@ namespace Console
         private void UpdateMaterial()
         {
             System.Console.Write("Enter material title to update: ");
-            string title = System.Console.ReadLine();
-            var material = _materialService.GetMaterial(title);
+            int id = int.Parse(System.Console.ReadLine());
+            var material = _materialService.GetMaterial(id);
             if (material != null)
             {
                 System.Console.Write("Enter new description: ");
@@ -158,8 +159,8 @@ namespace Console
         private void DeleteMaterial()
         {
             System.Console.Write("Enter material title to delete: ");
-            string title = System.Console.ReadLine();
-            _materialService.DeleteMaterial(title);
+            int id = int.Parse(System.Console.ReadLine());
+            _materialService.DeleteMaterial(id);
             System.Console.WriteLine("Material deleted successfully!");
             System.Console.ReadLine();
         }
@@ -167,8 +168,8 @@ namespace Console
         private void ViewMaterial()
         {
             System.Console.Write("Enter material title to view: ");
-            string title = System.Console.ReadLine();
-            var material = _materialService.GetMaterial(title);
+            int id = int.Parse(System.Console.ReadLine());
+            var material = _materialService.GetMaterial(id);
             if (material != null)
             {
                 System.Console.WriteLine($"Title: {material.Title}, Description: {material.Description}");
@@ -183,8 +184,8 @@ namespace Console
         private void EnrollInCourse()
         {
             System.Console.Write("Enter course name to enroll: ");
-            string courseName = System.Console.ReadLine();
-            var course = _courseService.GetCourse(courseName);
+            int id = int.Parse(System.Console.ReadLine());
+            var course = _courseService.GetById(id);
             if (course != null)
             {
                 _userService.EnrollInCourse(_loggedInUser, course);

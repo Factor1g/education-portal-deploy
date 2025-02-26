@@ -5,10 +5,10 @@ namespace Application
     public interface ICourseService
     {
         IEnumerable<Course> GetAllCourses();
-        Course GetCourse(string name);
+        Course GetById(int id);
         void CreateCourse(Course course);         
-        void UpdateCourse(Course course);
-        void DeleteCourse(string name);
+        void Update(Course course);
+        void Delete(int id);
     }
 }
 

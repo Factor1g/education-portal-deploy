@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.Interfaces;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,15 @@ namespace Application
     public class UserService : IUserService
     {
         
-        private IDataRepository _dataRepository;
+        
+        private IUserRepository _userRepository;
+        private ICourseRepository _courseRepository;
 
-        public UserService(IDataRepository dataRepository)
+        public UserService( IUserRepository userRepository, ICourseRepository courseRepository)
         {
-            _dataRepository = dataRepository;            
+            
+            _userRepository = userRepository;
+            _courseRepository = courseRepository;
         }        
 
         public void CompleteCourse(User user, Course course)
@@ -30,7 +35,7 @@ namespace Application
 
         public void CreateCourse(Course course)
         {
-            _dataRepository.AddCourse(course);
+            _courseRepository.Insert(course);
         }
 
         public void CreateMaterial(Material material)
@@ -51,9 +56,10 @@ namespace Application
             }
         }
 
+        /* --- DONE FOR EFCORE --- */
         public User Login(string username, string password)
         {
-            var user = _dataRepository.GetUser(username);
+            var user = _userRepository.GetUserByUsername(username);
             if (user != null && user.Password == password)
             {
                 return user;
@@ -62,7 +68,7 @@ namespace Application
         }
         public void Register(string username, string password)
         {
-            var existingUser = _dataRepository.GetUser(username);
+            var existingUser = _userRepository.GetUserByUsername(username);
             if (existingUser != null)
             {
                 throw new InvalidOperationException("Username is already in use!");
@@ -70,7 +76,7 @@ namespace Application
             else
             {
                 var user = new User{ Username = username, Password = password};
-                _dataRepository.AddUser(user);
+                _userRepository.Insert(user);
             }
         }
     }

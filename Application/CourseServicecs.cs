@@ -1,4 +1,6 @@
 ﻿using Data;
+using Data.Interfaces;
+using Data.Repositories;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -10,36 +12,36 @@ namespace Application
 {
     public class CourseServicecs : ICourseService
     {
-        private readonly IDataRepository _dataRepository;
+        private readonly ICourseRepository _courseRepository;
 
-        public CourseServicecs(IDataRepository dataRepository)
+        public CourseServicecs(ICourseRepository courseRepository)
         {
-            _dataRepository = dataRepository;
+            _courseRepository = courseRepository;
         }
 
         public void CreateCourse(Course course)
         {
-            _dataRepository.AddCourse(course);
-        }
+            _courseRepository.Insert(course);
+        }     
 
-        public void DeleteCourse(string name)
+        public void Delete(int id)
         {
-            _dataRepository.DeleteCourse(name);
+            _courseRepository.Delete(id);
         }
 
         public IEnumerable<Course> GetAllCourses()
         {
-            return _dataRepository.GetAllCourses();
-        }
+            return _courseRepository.GetAll();
+        }       
 
-        public Course GetCourse(string name)
+        public Course GetById(int id)
         {
-            return _dataRepository.GetCourse(name);
-        }
+            return _courseRepository.GetById(id);
+        }       
 
-        public void UpdateCourse(Course course)
+        public void Update(Course course)
         {
-            _dataRepository.UpdateCourse(course);
+            _courseRepository.Update(course);
         }
     }
 }
