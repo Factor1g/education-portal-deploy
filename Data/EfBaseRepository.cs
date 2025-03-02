@@ -24,36 +24,36 @@ namespace Data
             return context.Set<TEntity>();
         }
 
-        public TEntity? GetById(int id)
+        public async Task<TEntity?> GetById(int id)
         {
-            return context.Set<TEntity>().Find(id);
+            return await context.Set<TEntity>().FindAsync(id);
         }     
         
-        public bool Delete(TEntity entity)
+        public async Task<bool> Delete(TEntity entity)
         {
             context.Set<TEntity>().Remove(entity);            
-            return Save();
+            return await Save();
         }
-        public bool Insert(TEntity entity)
+        public async Task<bool> Insert(TEntity entity)
         {
             context.Set<TEntity>().Add(entity);
-            return Save();
+            return await Save();
         }
-        public bool Update(TEntity entity)
+        public async Task<bool> Update(TEntity entity)
         {
             context.Set<TEntity>().Update(entity);
-            return Save();
+            return await Save();
         }
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            TEntity? entity = GetById(id);
-            return entity == null ? false : Delete(entity);
+            TEntity? entity = await GetById(id);
+            return entity == null ? false : await Delete(entity);
         }
-        protected bool Save()
+        protected async Task<bool> Save()
         {
             try
             {
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return true;
             }
             catch (DbUpdateException ex)

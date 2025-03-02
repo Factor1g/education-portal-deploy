@@ -10,10 +10,10 @@ namespace Data.Interfaces
     public interface IRepository<TEntity> where TEntity : class
     {
         IQueryable<TEntity> GetAll();
-        TEntity? GetById(int id);
-        bool Insert(TEntity entity);
-        bool Update(TEntity entity);
-        bool Delete(TEntity entity);
-        bool Delete(int id);
+        Task<TEntity?> GetById(int id);
+        Task<bool> Insert(TEntity entity);
+        Task<bool> Update(TEntity entity);
+        Task<bool> Delete(TEntity entity);
+        Task<bool> Delete(int id);
     }
 }

@@ -25,6 +25,7 @@ namespace Console
 
         public void Start()
         {
+            System.Console.Clear();
             System.Console.WriteLine("Welcome to the Education Portal!");
             System.Console.WriteLine("1. Login\n2. Register");
             string choice = System.Console.ReadLine();
@@ -38,9 +39,15 @@ namespace Console
                     string username = System.Console.ReadLine();
                     System.Console.Write("Enter password: ");
                     string password = System.Console.ReadLine();
-                    _loggedInUser = _userService.Login(username, password);
-                    if (_loggedInUser == null)
-                        System.Console.WriteLine("Invalid credentials. Try again.");
+                    try
+                    {
+                        System.Console.WriteLine("Fetching data...");
+                        _loggedInUser = _userService.Login(username, password);
+                    }
+                    catch (Exception e)
+                    {
+                        System.Console.WriteLine(e.Message);
+                    }
                 }
                 else if (choice == "2")
                 {
@@ -48,7 +55,14 @@ namespace Console
                     string username = System.Console.ReadLine();
                     System.Console.Write("Enter new password: ");
                     string password = System.Console.ReadLine();
-                    _userService.Register(username, password);
+                    try
+                    {
+                        _userService.Register(username, password);
+                    }
+                    catch (Exception e)
+                    {
+                        System.Console.WriteLine(e.Message);
+                    }
                     System.Console.WriteLine("Registration successful! Please log in.");
                     choice = "1";
                 }
@@ -62,7 +76,7 @@ namespace Console
             while (true)
             {                
                 System.Console.Clear();
-                System.Console.WriteLine("1. Create Course\n2. Update Course\n3. Delete Course\n4. View Courses\n5. Create Material\n6. Update Material\n7. Delete Material\n8. View Material\n9. Enroll in Course\n10. Exit");
+                System.Console.WriteLine("1. Create Course\n2. Update Course\n3. Delete Course\n4. View Courses\n5. Create Material\n6. Update Material\n7. Delete Material\n8. View Material\n9. Enroll in Course\n10. Logout\n0. Exit");
                 var choice2 = System.Console.ReadLine();
                 switch (choice2)
                 {
@@ -75,10 +89,16 @@ namespace Console
                     case "7": DeleteMaterial(); break;
                     case "8": ViewMaterial(); break;
                     case "9": EnrollInCourse(); break;
-                    case "10": return;
+                    case "10": Logout(); return;
+                    case "0": return;
                     default: System.Console.WriteLine("Invalid choice. Try again."); break;
                 }
             }
+        }
+
+        private void Logout()
+        {
+            Start();
         }
 
         private void CreateCourse()

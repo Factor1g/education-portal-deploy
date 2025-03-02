@@ -60,11 +60,12 @@ namespace Application
         public User Login(string username, string password)
         {
             var user = _userRepository.GetUserByUsername(username);
-            if (user != null && user.Password == password)
+            if (user == null || user.Password != password)
             {
-                return user;
+                throw new AuthorizationFailedException("Invalid credentials!");
             }
-            return null;
+            return user;
+
         }
         public void Register(string username, string password)
         {
