@@ -11,7 +11,7 @@ namespace Data.Repositories
 {
     public class SkillRepository : EfBaseRepository<Skill>, ISkillRepository
     {
-        public SkillRepository(DbContext context) : base(context)
+        public SkillRepository(EducationPortalContext context) : base(context)
         {
         }
     }

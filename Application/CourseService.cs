@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Interfaces;
 using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    public class CourseServicecs : ICourseService
+    public class CourseService : ICourseService
     {
         private readonly ICourseRepository _courseRepository;
 
-        public CourseServicecs(ICourseRepository courseRepository)
+        public CourseService(ICourseRepository courseRepository)
         {
             _courseRepository = courseRepository;
         }
@@ -29,14 +30,14 @@ namespace Application
             _courseRepository.Delete(id);
         }
 
-        public IEnumerable<Course> GetAllCourses()
+        public async Task<IEnumerable<Course>> GetAllCourses()
         {
-            return _courseRepository.GetAll();
-        }       
+            return await _courseRepository.GetAll().ToListAsync();
+        }
 
-        public Course GetById(int id)
+        public Task<Course> GetById(int id)
         {
-            return _courseRepository.GetById(id);
+            return  _courseRepository.GetById(id);
         }       
 
         public void Update(Course course)

@@ -12,6 +12,7 @@ namespace Application
         void CreateMaterial(Material material);
         void UpdateMaterial(Material material);
         void DeleteMaterial(int id);
-        Material GetMaterial(int id);
+        List<Material> GetAllMaterials();
+        Task<Material> GetMaterial(int id);
     }
 }

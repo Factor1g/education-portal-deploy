@@ -4,8 +4,8 @@ namespace Application
 {
     public interface ICourseService
     {
-        IEnumerable<Course> GetAllCourses();
-        Course GetById(int id);
+        Task<IEnumerable<Course>> GetAllCourses();
+        Task<Course> GetById(int id);
         void CreateCourse(Course course);         
         void Update(Course course);
         void Delete(int id);

@@ -11,10 +11,10 @@ namespace Model
         public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public List<Course> CompletedCourses { get; set; } = new List<Course>();
-        public List<Course> InProgressCourses { get; set; } = new List<Course>();
-        public List<UserSkill> Skills { get; set; } = new List<UserSkill>();
-        public List<Material> CompletedMaterials { get; set; }
+        public ICollection<Course> CompletedCourses { get; set; } = new List<Course>();
+        public ICollection<Course> InProgressCourses { get; set; } = new List<Course>();
+        public ICollection<UserSkill> Skills { get; set; } = new List<UserSkill>();
+        public ICollection<Material> CompletedMaterials { get; set; }
         public void DisplaySkills()
         {
             Console.WriteLine("Your Skills:");

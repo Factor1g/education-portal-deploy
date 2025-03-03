@@ -28,7 +28,12 @@ namespace Application
             _materialRepository.Delete(id);
         }
 
-        public Material GetMaterial(int id)
+        public  List<Material> GetAllMaterials()
+        {
+            return _materialRepository.GetAll().ToList<Material>();
+        }
+
+        public Task<Material> GetMaterial(int id)
         {
             return _materialRepository.GetById(id);
         }

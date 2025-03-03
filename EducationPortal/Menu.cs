@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Console
 {
-    public class Menu
+    public class Menu : IMenu
     {
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
@@ -20,7 +20,7 @@ namespace Console
             _userService = userService;
             _courseService = courseService;
             _materialService = materialService;
-            
+            System.Console.WriteLine("Menu set up");
         }
 
         public void Start()
@@ -89,6 +89,7 @@ namespace Console
                     case "7": DeleteMaterial(); break;
                     case "8": ViewMaterial(); break;
                     case "9": EnrollInCourse(); break;
+                    case "11": ViewAllMaterials(); break;
                     case "10": Logout(); return;
                     case "0": return;
                     default: System.Console.WriteLine("Invalid choice. Try again."); break;
@@ -96,27 +97,51 @@ namespace Console
             }
         }
 
-        private void Logout()
+        public void Logout()
         {
             Start();
         }
 
-        private void CreateCourse()
+        public async void CreateCourse()
         {
             System.Console.Write("Enter course name: ");
             string name = System.Console.ReadLine();
             System.Console.Write("Enter course description: ");
             string description = System.Console.ReadLine();
-            _courseService.CreateCourse(new Course { Name = name, Description = description });
+
+            List<Material> materials = new List<Material>();
+            while (true)
+            {
+                System.Console.Write("Enter material ID to add (or type 'done' to finish): ");
+                string input = System.Console.ReadLine();
+                if (input.ToLower() == "done")
+                    break;
+
+                if (int.TryParse(input, out int materialId))
+                {
+                    var material = await _materialService.GetMaterial(materialId);
+                    if (material != null)
+                        materials.Add(material);
+                    else
+                        System.Console.WriteLine("Material not found.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Invalid input. Please enter a valid material ID.");
+                }
+            }
+
+            var course = new Course { Name = name, Description = description, Materials = materials };
+            _courseService.CreateCourse(course);
             System.Console.WriteLine("Course created successfully!");
             System.Console.ReadLine();
         }
 
-        private void UpdateCourse()
+        public async void UpdateCourse()
         {
-            System.Console.Write("Enter course name to update: ");
-            int name = int.Parse(System.Console.ReadLine());
-            var course = _courseService.GetById(name);
+            System.Console.Write("Enter course ID to update: ");
+            int id = int.Parse(System.Console.ReadLine());
+            var course = await _courseService.GetById(id);
             if (course != null)
             {
                 System.Console.Write("Enter new description: ");
@@ -129,41 +154,92 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        private void DeleteCourse()
+        public void DeleteCourse()
         {
-            System.Console.Write("Enter course name to delete: ");
+            System.Console.Write("Enter course ID to delete: ");
             int id = int.Parse(System.Console.ReadLine());
             _courseService.Delete(id);
             System.Console.WriteLine("Course deleted successfully!");
             System.Console.ReadLine();
         }
 
-        private void ViewCourses()
+        public async void ViewCourses()
         {
             System.Console.WriteLine("Courses Available:");
-            foreach (var course in _courseService.GetAllCourses())
+            foreach (var course in await _courseService.GetAllCourses())
             {
                 System.Console.WriteLine($"- {course.Name}: {course.Description}");
+                if (course.Materials != null && course.Materials.Any())
+                {
+                    System.Console.WriteLine("  Materials:");
+                    foreach (var material in course.Materials)
+                    {
+                        System.Console.WriteLine($"    - {material.Title} ({material.GetType().Name})");
+                    }
+                }
+                else
+                {
+                    System.Console.WriteLine("No materials available.");
+                }
             }
-            System.Console.ReadLine();
         }
 
-        private void CreateMaterial()
+        public void CreateMaterial()
         {
+            System.Console.Write("Enter material type (Article, Video, Book): ");
+            string materialType = System.Console.ReadLine().ToLower();
             System.Console.Write("Enter material title: ");
             string title = System.Console.ReadLine();
             System.Console.Write("Enter description: ");
             string description = System.Console.ReadLine();
-            _materialService.CreateMaterial(new Video { Title = title, Description = description }); // Defaulting to Video for now
+
+            Material material = null;
+
+            if (materialType == "article")
+            {
+
+                System.Console.Write("Enter publication date (YYYY-MM-DD): ");
+                DateTime publicationDate = DateTime.Parse(System.Console.ReadLine());
+                System.Console.Write("Enter resource URL: ");
+                string resource = System.Console.ReadLine();
+                material = new Article { Title = title, Description = description, PublicationDate = publicationDate, Resource = resource };
+            }
+            else if (materialType == "video")
+            {
+                System.Console.Write("Enter duration (in minutes): ");
+                int duration = int.Parse(System.Console.ReadLine());
+                System.Console.Write("Enter quality (e.g., HD, 4K): ");
+                string quality = System.Console.ReadLine();
+                material = new Video { Title = title, Description = description, Duration = duration, Quality = quality };
+            }
+            else if (materialType == "book")
+            {
+                System.Console.Write("Enter author name: ");
+                string author = System.Console.ReadLine();
+                System.Console.Write("Enter number of pages: ");
+                int pages = int.Parse(System.Console.ReadLine());
+                System.Console.Write("Enter format (e.g., PDF, EPUB): ");
+                string format = System.Console.ReadLine();
+                System.Console.Write("Enter publication year: ");
+                int year = int.Parse(System.Console.ReadLine());
+                material = new Book { Title = title, Description = description, Author = author, Pages = pages, Format = format, Year = year };
+            }
+            else
+            {
+                System.Console.WriteLine("Invalid material type entered.");
+                return;
+            }
+
+            _materialService.CreateMaterial(material);
             System.Console.WriteLine("Material created successfully!");
             System.Console.ReadLine();
         }
 
-        private void UpdateMaterial()
+        public async void UpdateMaterial()
         {
-            System.Console.Write("Enter material title to update: ");
+            System.Console.Write("Enter material ID to update: ");
             int id = int.Parse(System.Console.ReadLine());
-            var material = _materialService.GetMaterial(id);
+            var material = await _materialService.GetMaterial(id);
             if (material != null)
             {
                 System.Console.Write("Enter new description: ");
@@ -176,20 +252,20 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        private void DeleteMaterial()
+        public void DeleteMaterial()
         {
-            System.Console.Write("Enter material title to delete: ");
+            System.Console.Write("Enter material ID to delete: ");
             int id = int.Parse(System.Console.ReadLine());
             _materialService.DeleteMaterial(id);
             System.Console.WriteLine("Material deleted successfully!");
             System.Console.ReadLine();
         }
 
-        private void ViewMaterial()
+        public async void ViewMaterial()
         {
-            System.Console.Write("Enter material title to view: ");
+            System.Console.Write("Enter material ID to view: ");
             int id = int.Parse(System.Console.ReadLine());
-            var material = _materialService.GetMaterial(id);
+            var material = await _materialService.GetMaterial(id);
             if (material != null)
             {
                 System.Console.WriteLine($"Title: {material.Title}, Description: {material.Description}");
@@ -201,11 +277,34 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        private void EnrollInCourse()
+        public void ViewAllMaterials()
         {
-            System.Console.Write("Enter course name to enroll: ");
+            System.Console.WriteLine("All Materials:");
+            foreach (var material in _materialService.GetAllMaterials())
+            {
+                System.Console.WriteLine($"ID:{material.Id} Title: {material.Title}, Description: {material.Description}");
+                if (material is Article article)
+                {
+                    System.Console.WriteLine($"Publication Date: {article.PublicationDate}, Resource: {article.Resource}");
+                }
+                else if (material is Video video)
+                {
+                    System.Console.WriteLine($"Duration: {video.Duration} mins, Quality: {video.Quality}");
+                }
+                else if (material is Book book)
+                {
+                    System.Console.WriteLine($"Author: {book.Author}, Pages: {book.Pages}, Format: {book.Format}, Year: {book.Year}");
+                }
+                System.Console.WriteLine("---------------------------");
+            }
+            System.Console.ReadLine();
+        }
+
+        public async void EnrollInCourse()
+        {
+            System.Console.Write("Enter course ID to enroll: ");
             int id = int.Parse(System.Console.ReadLine());
-            var course = _courseService.GetById(id);
+            var course = await _courseService.GetById(id);
             if (course != null)
             {
                 _userService.EnrollInCourse(_loggedInUser, course);
