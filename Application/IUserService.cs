@@ -11,9 +11,8 @@ namespace Application
     {
         void Register(string username, string password);
         User Login (string username, string password);
+        Task<User> GetById(int userId);
         void DisplaySkills(User user);        
-        void EnrollInCourse(User user, Course course);        
-        void CompleteMaterial(User user, string materialTitle);
-        void CompleteCourse(User user, Course course);
+        void EnrollInCourse(User user, Course course);               
     }
 }

@@ -14,5 +14,13 @@ namespace Data.Repositories
         public MaterialRepository(EducationPortalContext context) : base(context)
         {
         }
+
+        public async Task<List<Material>> GetCompletedMaterials(int userId)
+        {
+            return await context.Set<User>()
+                .Where(u => u.Id == userId)
+                .SelectMany(u => u.CompletedMaterials)
+                .ToListAsync();
+        }
     }
 }

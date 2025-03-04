@@ -9,7 +9,7 @@ namespace Data.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        IQueryable<TEntity> GetAll();
+        Task<IEnumerable<TEntity>> GetAll();
         Task<TEntity?> GetById(int id);
         Task<bool> Insert(TEntity entity);
         Task<bool> Update(TEntity entity);

@@ -12,7 +12,9 @@ namespace Application
         void CreateMaterial(Material material);
         void UpdateMaterial(Material material);
         void DeleteMaterial(int id);
-        List<Material> GetAllMaterials();
+        Task<IEnumerable<Material>> GetAllMaterials();
         Task<Material> GetMaterial(int id);
+        Task CompleteMaterial(User user, int materialId);
+        Task<List<Material>> GetCompletedMaterials(int userId);
     }
 }

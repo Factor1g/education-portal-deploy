@@ -14,5 +14,12 @@ namespace Data.Repositories
         public SkillRepository(EducationPortalContext context) : base(context)
         {
         }
+
+        public async Task<List<UserSkill>> GetUserSkills(int userId)
+        {
+            return await context.Set<UserSkill>()
+                .Where(u => u.UserId == userId)                
+                .ToListAsync();
+        }
     }
 }

@@ -29,20 +29,31 @@ namespace Application
         {
             _courseRepository.Delete(id);
         }
-
-        public async Task<IEnumerable<Course>> GetAllCourses()
+        public async Task<List<Course>> GetAllCourses()
         {
-            return await _courseRepository.GetAll().ToListAsync();
-        }
+            return await _courseRepository.GetAllCourses();
+        }        
 
         public Task<Course> GetById(int id)
         {
             return  _courseRepository.GetById(id);
-        }       
-
-        public void Update(Course course)
-        {
-            _courseRepository.Update(course);
         }
+
+        public async Task<List<Course>> GetCompletedCourses(int userId)
+        {
+            return await _courseRepository.GetCompletedCourses(userId);
+        }
+
+        public async Task<List<Course>> GetInProgressCourses(int userId)
+        {
+            return await _courseRepository.GetInProgressCourses(userId);
+        }
+
+        public async Task Update(Course course)
+        {
+            await _courseRepository.Update(course);
+        }
+
+        
     }
 }

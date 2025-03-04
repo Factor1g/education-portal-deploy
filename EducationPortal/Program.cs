@@ -40,31 +40,30 @@ namespace EducationPortal
                     .SetBasePath(Directory.GetCurrentDirectory()) 
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) 
                     .Build();
-                // Create Host Builder
+
                 var host = Host.CreateDefaultBuilder()
                     .ConfigureServices((context, services) =>
                     {
-                        // Load Configuration
+
                         IConfiguration configuration = context.Configuration;
 
-                        // Register Dependencies
                         services.AddEducationPortalDependencies(configuration);
                     })
                     .Build();
                 await host.StartAsync();
-                // Resolve services
+             
                 using (var scope = host.Services.CreateScope())
                 {
                     var services = scope.ServiceProvider;
                     
-                        // Ensure Database is Created
-                        var dbContext = services.GetRequiredService<EducationPortalContext>();
-                        await dbContext.Database.MigrateAsync();
+                   
+                    var dbContext = services.GetRequiredService<EducationPortalContext>();
+                    await dbContext.Database.MigrateAsync();
 
-                        // Example: Resolving and Using a Service
-                        var menu = services.GetRequiredService<IMenu>();
+                     
+                    var menu = services.GetRequiredService<IMenu>();
                     System.Console.WriteLine("Starting Menu...");
-                    menu.Start();
+                    await menu.Start();
                     
                 }
                 await host.WaitForShutdownAsync();

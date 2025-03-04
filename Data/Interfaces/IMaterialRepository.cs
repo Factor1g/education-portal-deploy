@@ -9,6 +9,6 @@ namespace Data.Interfaces
 {
     public interface IMaterialRepository : IRepository<Material>
     {
-
+        Task<List<Material>> GetCompletedMaterials(int userId);
     }
 }

@@ -9,5 +9,8 @@ namespace Data.Interfaces
 {
     public interface ICourseRepository : IRepository<Course>
     {
+        Task<List<Course>> GetAllCourses();
+        Task<List<Course>> GetInProgressCourses(int userId);
+        Task<List<Course>> GetCompletedCourses(int userId);
     }
 }

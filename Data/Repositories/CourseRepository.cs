@@ -13,5 +13,44 @@ namespace Data.Repositories
         public CourseRepository(EducationPortalContext context) : base(context)
         {
         }
+        public async Task<List<Course>> GetAllCourses()
+        {
+            return await context.Set<Course>()
+                .Include(c => c.Materials)
+                .Include(c => c.Skills)
+                .ToListAsync();
+        }
+
+        public async Task<List<Course>> GetInProgressCourses(int userId)
+        {
+            return await context.Set<User>()
+                .Where(u => u.Id == userId)
+                .SelectMany(u => u.InProgressCourses)
+                .Include(c => c.Materials)
+                .ToListAsync();
+        }
+
+        public async Task<List<Course>> GetCompletedCourses(int userId)
+        {
+            return await context.Set<User>()
+                .Where(u => u.Id == userId)
+                .SelectMany(u => u.CompletedCourses)
+                .ToListAsync();
+        }
+        public async Task<bool> EnrollInCourse(int userId, int courseId)
+        {
+            var user = await context.Set<User>().Include(u => u.InProgressCourses).FirstOrDefaultAsync(u => u.Id == userId);
+            var course = await context.Set<Course>().FirstOrDefaultAsync(c => c.Id == courseId);
+
+            if (user == null || course == null)
+                return false;
+
+            if (!user.InProgressCourses.Contains(course))
+            {
+                user.InProgressCourses.Add(course);
+                return await Save();
+            }
+            return false;
+        }
     }
 }

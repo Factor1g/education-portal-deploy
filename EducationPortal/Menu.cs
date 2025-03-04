@@ -13,17 +13,19 @@ namespace Console
         private readonly IUserService _userService;
         private readonly ICourseService _courseService;
         private readonly IMaterialService _materialService;
+        private readonly ISkillService _skillService;
         private User _loggedInUser;
 
-        public Menu(IUserService userService, ICourseService courseService, IMaterialService materialService)
+        public Menu(IUserService userService, ICourseService courseService, IMaterialService materialService, ISkillService skillService)
         {
             _userService = userService;
             _courseService = courseService;
             _materialService = materialService;
+            _skillService = skillService;
             System.Console.WriteLine("Menu set up");
         }
 
-        public void Start()
+        public async Task Start()
         {
             System.Console.Clear();
             System.Console.WriteLine("Welcome to the Education Portal!");
@@ -76,21 +78,27 @@ namespace Console
             while (true)
             {                
                 System.Console.Clear();
-                System.Console.WriteLine("1. Create Course\n2. Update Course\n3. Delete Course\n4. View Courses\n5. Create Material\n6. Update Material\n7. Delete Material\n8. View Material\n9. Enroll in Course\n10. Logout\n0. Exit");
+                System.Console.WriteLine("1. Create Course\n2. Update Course\n3. Delete Course\n4. View Courses\n5. Create Material\n6. Update Material\n7. Delete Material\n8. View Material\n9. Enroll in Course\n10. View all Materials\n11. Complete Material\n12. Manage User Profile\n13. Create Skill\n14. View Skills\n15. Update Skill\n16. Delete Skill\n17. Logout\n0. Exit");
                 var choice2 = System.Console.ReadLine();
                 switch (choice2)
                 {
-                    case "1": CreateCourse(); break;
-                    case "2": UpdateCourse(); break;
+                    case "1": await CreateCourse(); break;
+                    case "2": await UpdateCourse(); break;
                     case "3": DeleteCourse(); break;
-                    case "4": ViewCourses(); break;
+                    case "4": await ViewCourses(); break;
                     case "5": CreateMaterial(); break;
                     case "6": UpdateMaterial(); break;
                     case "7": DeleteMaterial(); break;
                     case "8": ViewMaterial(); break;
                     case "9": EnrollInCourse(); break;
-                    case "11": ViewAllMaterials(); break;
-                    case "10": Logout(); return;
+                    //case "11": await CompleteMaterial(); break;
+                    //case "12": await ManageUserProfile(); break;
+                    case "13": await CreateSkill(); break;
+                    case "14": await ViewSkills(); break;
+                    case "15": await UpdateSkill(); break;
+                    case "16": DeleteSkill(); break;
+                    case "17": Logout(); ; break;
+                    case "18": await ViewProfile(_loggedInUser); ; break;
                     case "0": return;
                     default: System.Console.WriteLine("Invalid choice. Try again."); break;
                 }
@@ -102,7 +110,7 @@ namespace Console
             Start();
         }
 
-        public async void CreateCourse()
+        public async Task CreateCourse()
         {
             System.Console.Write("Enter course name: ");
             string name = System.Console.ReadLine();
@@ -131,26 +139,134 @@ namespace Console
                 }
             }
 
-            var course = new Course { Name = name, Description = description, Materials = materials };
+            List<Skill> skills = new List<Skill>();
+            while (true)
+            {
+                System.Console.Write("Enter skill ID to add (or type 'done' to finish): ");
+                string input = System.Console.ReadLine()?.Trim().ToLower();
+                if (input == "done")
+                    break;
+
+                if (int.TryParse(input, out int skillId))
+                {
+                    var skill = await _skillService.GetById(skillId);
+                    if (skill != null)
+                        skills.Add(skill);
+                    else
+                        System.Console.WriteLine("Skill not found.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Invalid input. Please enter a valid skill ID.");
+                }
+            }
+
+            var course = new Course { Name = name, Description = description, Materials = materials, Skills = skills };
             _courseService.CreateCourse(course);
             System.Console.WriteLine("Course created successfully!");
             System.Console.ReadLine();
         }
 
-        public async void UpdateCourse()
+        public async Task UpdateCourse()
         {
             System.Console.Write("Enter course ID to update: ");
-            int id = int.Parse(System.Console.ReadLine());
-            var course = await _courseService.GetById(id);
-            if (course != null)
+            if (!int.TryParse(System.Console.ReadLine(), out int id))
             {
-                System.Console.Write("Enter new description: ");
-                course.Description = System.Console.ReadLine();
-                _courseService.Update(course);
-                System.Console.WriteLine("Course updated successfully!");
-                System.Console.ReadLine();
+                System.Console.WriteLine("Invalid course ID.");
+                return;
             }
-            else System.Console.WriteLine("Course not found!");
+
+            var course = await _courseService.GetById(id);
+            if (course == null)
+            {
+                System.Console.WriteLine("Course not found!");
+                return;
+            }
+
+            System.Console.WriteLine($"Current name: {course.Name}");
+            System.Console.Write("Enter new name (or press Enter to keep current): ");
+            string nameInput = System.Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(nameInput))
+                course.Name = nameInput;
+
+            System.Console.WriteLine($"Current description: {course.Description}");
+            System.Console.Write("Enter new description (or press Enter to keep current): ");
+            string descriptionInput = System.Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(descriptionInput))
+                course.Description = descriptionInput;
+
+            List<Material> updatedMaterials = new List<Material>(course.Materials);
+           
+            while (true)
+            {
+                System.Console.Write("Enter material ID to add/remove (or type 'done' to finish, or 'skip' to keep current materials): ");
+                string input = System.Console.ReadLine()?.Trim().ToLower();
+                if (input == "done" || input == "skip")
+                    break;
+
+                if (int.TryParse(input, out int materialId))
+                {
+                    var material = await _materialService.GetMaterial(materialId);
+                    if (material != null)
+                    {
+                        if (updatedMaterials.Any(m => m.Id == material.Id))
+                        {
+                            updatedMaterials.RemoveAll(m => m.Id == material.Id);
+                            System.Console.WriteLine("Material removed.");
+                        }
+                        else
+                        {
+                            updatedMaterials.Add(material);
+                            System.Console.WriteLine("Material added.");
+                        }
+                    }
+                    else
+                        System.Console.WriteLine("Material not found.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Invalid input. Please enter a valid material ID.");
+                }
+            }
+
+            List<Skill> updatedSkills = new List<Skill>(course.Skills);
+            while (true)
+            {
+                System.Console.Write("Enter skill ID to add/remove (or type 'done' to finish, or 'skip' to keep current skills): ");
+                string input = System.Console.ReadLine()?.Trim().ToLower();
+                if (input == "done" || input == "skip")
+                    break;
+
+                if (int.TryParse(input, out int skillId))
+                {
+                    var skill = await _skillService.GetById(skillId);
+                    if (skill != null)
+                    {
+                        if (updatedSkills.Any(s => s.Id == skill.Id))
+                        {
+                            updatedSkills.RemoveAll(s => s.Id == skill.Id);
+                            System.Console.WriteLine("Skill removed.");
+                        }
+                        else
+                        {
+                            updatedSkills.Add(skill);
+                            System.Console.WriteLine("Skill added.");
+                        }
+                    }
+                    else
+                        System.Console.WriteLine("Skill not found.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Invalid input. Please enter a valid skill ID.");
+                }
+            }
+
+            course.Materials = updatedMaterials;
+            course.Skills = updatedSkills;
+
+            await _courseService.Update(course);
+            System.Console.WriteLine("Course updated successfully!");
             System.Console.ReadLine();
         }
 
@@ -163,25 +279,49 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        public async void ViewCourses()
+        public async Task ViewCourses()
         {
+            System.Console.Clear();
             System.Console.WriteLine("Courses Available:");
-            foreach (var course in await _courseService.GetAllCourses())
+
+            var courses = await _courseService.GetAllCourses();
+
+            if (!courses.Any())
             {
-                System.Console.WriteLine($"- {course.Name}: {course.Description}");
-                if (course.Materials != null && course.Materials.Any())
+                System.Console.WriteLine("No courses available.");
+                return;
+            }
+
+            foreach (var course in courses)
+            {
+                System.Console.WriteLine($"- ID: {course.Id} {course.Name}: {course.Description}");
+
+                if (course.Materials.Any())
                 {
                     System.Console.WriteLine("  Materials:");
                     foreach (var material in course.Materials)
                     {
                         System.Console.WriteLine($"    - {material.Title} ({material.GetType().Name})");
+                    }                                        
+                }
+                else
+                {
+                    System.Console.WriteLine("  No materials available.");
+                }
+                if (course.Skills.Any())
+                {
+                    System.Console.WriteLine("  Acquirable skills:");
+                    foreach (var skill in course.Skills)
+                    {
+                        System.Console.WriteLine($"    - {skill.Name}");
                     }
                 }
                 else
                 {
-                    System.Console.WriteLine("No materials available.");
+                    System.Console.WriteLine("  No skills available.");
                 }
             }
+            System.Console.ReadKey();
         }
 
         public void CreateMaterial()
@@ -235,7 +375,7 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        public async void UpdateMaterial()
+        public async Task UpdateMaterial()
         {
             System.Console.Write("Enter material ID to update: ");
             int id = int.Parse(System.Console.ReadLine());
@@ -261,7 +401,7 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        public async void ViewMaterial()
+        public async Task ViewMaterial()
         {
             System.Console.Write("Enter material ID to view: ");
             int id = int.Parse(System.Console.ReadLine());
@@ -277,10 +417,11 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        public void ViewAllMaterials()
+        public async Task ViewAllMaterials()
         {
             System.Console.WriteLine("All Materials:");
-            foreach (var material in _materialService.GetAllMaterials())
+            
+            foreach (var material in await _materialService.GetAllMaterials())
             {
                 System.Console.WriteLine($"ID:{material.Id} Title: {material.Title}, Description: {material.Description}");
                 if (material is Article article)
@@ -300,7 +441,7 @@ namespace Console
             System.Console.ReadLine();
         }
 
-        public async void EnrollInCourse()
+        public async Task EnrollInCourse()
         {
             System.Console.Write("Enter course ID to enroll: ");
             int id = int.Parse(System.Console.ReadLine());
@@ -314,5 +455,131 @@ namespace Console
             else System.Console.WriteLine("Course not found!");
             System.Console.ReadLine();
         }
+        public async Task CreateSkill()
+        {
+            System.Console.Write("Enter skill name: ");
+            string name = System.Console.ReadLine();
+            System.Console.Write("Enter skill description: ");
+            string description = System.Console.ReadLine();
+
+            Skill skill = new Skill { Name = name, Description = description };
+            _skillService.CreateSkill(skill);
+            System.Console.WriteLine("Skill created successfully!");
+            System.Console.ReadLine();
+        }
+
+        public async Task ViewSkills()
+        {
+            System.Console.WriteLine("Skills Available:");
+            var skills = await _skillService.GetAllSkills();
+
+            if (!skills.Any())
+            {
+                System.Console.WriteLine("No skills available.");
+                return;
+            }
+
+            foreach (var skill in skills)
+            {
+                System.Console.WriteLine($"- ID: {skill.Id}, Name: {skill.Name}, Description: {skill.Description}");
+            }
+            System.Console.ReadLine();
+        }
+
+        public async Task UpdateSkill()
+        {
+            System.Console.Write("Enter skill ID to update: ");
+            if (!int.TryParse(System.Console.ReadLine(), out int id))
+            {
+                System.Console.WriteLine("Invalid skill ID.");
+                return;
+            }
+
+            var skill = await _skillService.GetById(id);
+            if (skill == null)
+            {
+                System.Console.WriteLine("Skill not found!");
+                return;
+            }
+
+            System.Console.WriteLine($"Current name: {skill.Name}");
+            System.Console.Write("Enter new name (or press Enter to keep current): ");
+            string nameInput = System.Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(nameInput))
+                skill.Name = nameInput;
+
+            System.Console.WriteLine($"Current description: {skill.Description}");
+            System.Console.Write("Enter new description (or press Enter to keep current): ");
+            string descriptionInput = System.Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(descriptionInput))
+                skill.Description = descriptionInput;
+
+            await _skillService.Update(skill);
+            System.Console.WriteLine("Skill updated successfully!");
+            System.Console.ReadLine();
+        }
+
+        public void DeleteSkill()
+        {
+            System.Console.Write("Enter skill ID to delete: ");
+            if (!int.TryParse(System.Console.ReadLine(), out int id))
+            {
+                System.Console.WriteLine("Invalid skill ID.");
+                return;
+            }
+            _skillService.Delete(id);
+            System.Console.WriteLine("Skill deleted successfully!");
+            System.Console.ReadLine();
+        }
+
+        public async Task ViewProfile(User user)
+        {
+            //var user = await _userService.GetById(userId);
+            if (user == null)
+            {
+                System.Console.WriteLine("User not found!");
+                return;
+            }
+
+            System.Console.Clear();
+            System.Console.WriteLine($"User Profile: {user.Username}\n");
+
+            System.Console.WriteLine("Enrolled Courses:");
+            //foreach (var course in await _courseService.GetInProgressCourses(user.Id))
+            //{
+            //    System.Console.WriteLine($"- {course.Name}");
+            //}
+
+            System.Console.WriteLine("\nCompleted Courses:");
+            foreach (var course in await _courseService.GetCompletedCourses(user.Id))
+            {
+                System.Console.WriteLine($"- {course.Name}");
+            }
+
+            System.Console.WriteLine("\nSkills:");
+            foreach (var skill in await _skillService.GetUserSkills(user.Id))
+            {
+                System.Console.WriteLine($"- {skill.Skill.Name} (Level {skill.Level})");
+            }
+
+            System.Console.WriteLine("\nCompleted Materials:");
+            foreach (var material in await _materialService.GetCompletedMaterials(user.Id))
+            {
+                System.Console.WriteLine($"- {material.Title} ({material.GetType().Name})");
+            }
+
+            System.Console.WriteLine("\nCourse Completion Progress:");
+            foreach (var course in user.InProgressCourses)
+            {
+                //int totalMaterials = course.Materials.Count;
+                //int completedMaterials = user.CompletedMaterials.Count(m => course.Materials.Contains(m));
+                //double completionPercentage = totalMaterials > 0 ? (double)completedMaterials / totalMaterials * 100 : 0;
+                //System.Console.WriteLine($"- {course.Name}: {completionPercentage:F2}% completed");
+                System.Console.WriteLine($"- {course.Name}");
+            }
+
+            System.Console.ReadKey();
+        }
+
     }
 }

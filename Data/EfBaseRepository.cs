@@ -19,9 +19,9 @@ namespace Data
             this.context = context;            
         }
 
-        public IQueryable<TEntity> GetAll()
-        {           
-            return context.Set<TEntity>();
+        public async Task<IEnumerable<TEntity>> GetAll()
+        {
+            return await context.Set<TEntity>().ToListAsync();
         }
 
         public async Task<TEntity?> GetById(int id)
