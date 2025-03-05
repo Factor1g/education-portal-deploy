@@ -46,5 +46,11 @@ namespace Application
         {
             await _skillRepository.Update(skill);
         }
+
+        public async Task<bool> AcquireSkill(int userId, int skillId)
+        {
+
+            return await _skillRepository.AcquireSkill(userId, skillId);
+        }
     }
 }

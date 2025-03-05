@@ -10,6 +10,7 @@ namespace Data.Interfaces
     public interface ISkillRepository : IRepository<Skill>
     {
         Task<List<UserSkill>> GetUserSkills(int userId);
+        Task<bool> AcquireSkill(int userId, int skillId);
     }
 
 }

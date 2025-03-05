@@ -11,6 +11,10 @@ namespace Application
         void Delete(int id);
         Task<List<Course>> GetInProgressCourses(int userId);
         Task<List<Course>> GetCompletedCourses(int userId);
+        Task<bool> EnrollInCourse(int userId, int courseId);
+        Task<bool> AddCompletedCourse(int userId, int courseId);
+        Task AddMaterialToCourse(int courseId, int materialId);
+        Task AddSkillToCourse(int courseId, int skillId);
     }
 }
 

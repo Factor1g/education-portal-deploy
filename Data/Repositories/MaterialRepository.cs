@@ -22,5 +22,25 @@ namespace Data.Repositories
                 .SelectMany(u => u.CompletedMaterials)
                 .ToListAsync();
         }
+
+        public async Task<bool> CompleteMaterial(int userId, int materialId)
+        {
+            var user = await context.Set<User>().Include(u => u.CompletedMaterials).FirstOrDefaultAsync(u => u.Id == userId);
+            var material = await context.Set<Material>().FirstOrDefaultAsync(m => m.Id == materialId);
+
+            if (user == null || material == null)
+            {
+                throw new MaterialNotFoundException("No material was found with given ID!");
+                return false;
+            }
+            if (!user.CompletedMaterials.Contains(material))
+            {
+                user.CompletedMaterials.Add(material);
+                await Save();
+                return true;
+            }
+            return false;
+        }
+
     }
 }

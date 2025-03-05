@@ -13,21 +13,25 @@ namespace Application
     {
         private readonly IMaterialRepository _materialRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICourseRepository _courseRepository;
+        private readonly ISkillRepository _skillRepository;
 
-        public MaterialService(IMaterialRepository materialRepository, IUserRepository userRepository)
+        public MaterialService(IMaterialRepository materialRepository, IUserRepository userRepository, ICourseRepository courseRepository, ISkillRepository skillRepository)
         {
             _materialRepository = materialRepository;
             _userRepository = userRepository;
+            _courseRepository = courseRepository;
+            _skillRepository = skillRepository;
         }
 
-        public void CreateMaterial(Material material)
+        public async Task CreateMaterial(Material material)
         {
-            _materialRepository.Insert(material);
+            await _materialRepository.Insert(material);
         }
 
-        public void DeleteMaterial(int id)
+        public async Task DeleteMaterial(int id)
         {
-            _materialRepository.Delete(id);
+            await _materialRepository.Delete(id);
         }
 
         public async Task<IEnumerable<Material>> GetAllMaterials()
@@ -35,33 +39,45 @@ namespace Application
             return await _materialRepository.GetAll();
         }
 
-        public Task<Material> GetMaterial(int id)
+        public Task<Material> GetById(int id)
         {
             return _materialRepository.GetById(id);
         }
 
-        public void UpdateMaterial(Material material)
+        public async Task UpdateMaterial(Material material)
         {
-            _materialRepository.Update(material);
+            await _materialRepository.Update(material);
         }
 
-        public async Task CompleteMaterial(User user, int materialId)
+        public async Task CompleteMaterial(int userId, int materialId)
         {
             var material = await _materialRepository.GetById(materialId);
-            if (material == null)
-            {
-                throw new MaterialNotFoundException("Material could not be found!");
-            }
+            var completedMaterials = await _materialRepository.GetCompletedMaterials(userId);           
             
-            if (!user.CompletedMaterials.Contains(material))
+            if (!completedMaterials.Contains(material))
             {
-                user.CompletedMaterials.Add(material);
-                await _userRepository.Update(user);                
-            }
-            else
+                await _materialRepository.CompleteMaterial(userId, materialId);
+                completedMaterials.Add(material);
+            }            
+
+            foreach (var course in await _courseRepository.GetInProgressCourses(userId))
             {
-                throw new MaterialAlreadyCompletedException("Material already completed!");
+                var courseMaterials = await _courseRepository.GetAllCourseMaterials(course.Id);
+                if (courseMaterials.All(m => completedMaterials.Contains(m)))
+                {
+                    if (!(await _courseRepository.GetCompletedCourses(userId)).Contains(course))
+                    {
+                        await _courseRepository.AddCompletedCourse(userId, course.Id);
+
+                        foreach (var skill in await _courseRepository.GetAllCourseSkills(course.Id))
+                        {
+                            Console.WriteLine("Evaluating skills");
+                            await _skillRepository.AcquireSkill(userId, skill.Id);
+                        }
+                    }
+                }
             }
+
         }
 
         public async Task<List<Material>> GetCompletedMaterials(int userId)

@@ -15,5 +15,6 @@ namespace Application
         Task Update(Skill course);
         void Delete(int id);
         Task<List<UserSkill>> GetUserSkills(int userId);
+        Task<bool> AcquireSkill(int userId, int skillId);
     }
 }

@@ -49,7 +49,7 @@ namespace Data
             TEntity? entity = await GetById(id);
             return entity == null ? false : await Delete(entity);
         }
-        protected async Task<bool> Save()
+        public async Task<bool> Save()
         {
             try
             {

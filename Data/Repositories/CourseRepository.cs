@@ -13,6 +13,7 @@ namespace Data.Repositories
         public CourseRepository(EducationPortalContext context) : base(context)
         {
         }
+
         public async Task<List<Course>> GetAllCourses()
         {
             return await context.Set<Course>()
@@ -43,7 +44,11 @@ namespace Data.Repositories
             var course = await context.Set<Course>().FirstOrDefaultAsync(c => c.Id == courseId);
 
             if (user == null || course == null)
+            {
+                throw new CourseNotFoundException("No course was found with given ID!");
                 return false;
+            }
+
 
             if (!user.InProgressCourses.Contains(course))
             {
@@ -51,6 +56,45 @@ namespace Data.Repositories
                 return await Save();
             }
             return false;
+        }
+
+        public async Task<List<Material>> GetAllCourseMaterials(int courseId)
+        {
+            var course = await context.Set<Course>()
+                .Include(c => c.Materials)
+                .FirstOrDefaultAsync(c => c.Id == courseId);
+
+            return course?.Materials?.ToList() ?? new List<Material>();
+        }
+
+        public async Task<bool> AddCompletedCourse(int userId, int courseId)
+        {
+            var user = await context.Set<User>().Include(u => u.CompletedCourses).FirstOrDefaultAsync(u => u.Id == userId);
+            var course = await context.Set<Course>().FirstOrDefaultAsync(c => c.Id == courseId);
+
+            if (user == null || course == null)
+            {
+                throw new CourseNotFoundException("No course was found with given ID!");
+                return false;
+            }
+
+            if (!user.CompletedCourses.Contains(course))
+            {
+                user.CompletedCourses.Add(course);
+                await context.SaveChangesAsync();
+                
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<List<Skill>> GetAllCourseSkills(int courseId)
+        {
+            var course = await context.Set<Course>()
+                .Include(c => c.Skills)
+                .FirstOrDefaultAsync(c => c.Id == courseId);
+
+            return course?.Skills?.ToList() ?? new List<Skill>();
         }
     }
 }

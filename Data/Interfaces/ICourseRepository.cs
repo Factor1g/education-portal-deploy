@@ -12,5 +12,9 @@ namespace Data.Interfaces
         Task<List<Course>> GetAllCourses();
         Task<List<Course>> GetInProgressCourses(int userId);
         Task<List<Course>> GetCompletedCourses(int userId);
+        Task<bool> EnrollInCourse(int userId, int courseId);
+        Task<List<Material>> GetAllCourseMaterials(int courseId);
+        Task<bool> AddCompletedCourse(int userId, int courseId);
+        Task<List<Skill>> GetAllCourseSkills(int courseId);
     }
 }
