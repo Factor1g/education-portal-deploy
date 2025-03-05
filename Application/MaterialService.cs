@@ -70,8 +70,7 @@ namespace Application
                         await _courseRepository.AddCompletedCourse(userId, course.Id);
 
                         foreach (var skill in await _courseRepository.GetAllCourseSkills(course.Id))
-                        {
-                            Console.WriteLine("Evaluating skills");
+                        {                            
                             await _skillRepository.AcquireSkill(userId, skill.Id);
                         }
                     }
