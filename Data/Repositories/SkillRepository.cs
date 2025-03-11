@@ -18,7 +18,8 @@ namespace Data.Repositories
         public async Task<List<UserSkill>> GetUserSkills(int userId)
         {
             return await context.Set<UserSkill>()
-                .Where(u => u.UserId == userId)                
+                .Where(u => u.UserId == userId)
+                .Include(us => us.Skill)
                 .ToListAsync();
         }
 

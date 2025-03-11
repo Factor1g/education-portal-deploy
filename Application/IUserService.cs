@@ -13,6 +13,8 @@ namespace Application
         User Login (string username, string password);
         Task<User> GetById(int userId);
         void DisplaySkills(User user);        
-        void EnrollInCourse(User user, Course course);               
+        void EnrollInCourse(User user, Course course);
+
+        Task<User> AuthenticateUserAsync(string username, string password);
     }
 }

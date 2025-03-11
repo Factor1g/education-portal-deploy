@@ -67,5 +67,15 @@ namespace Application
                 _userRepository.Insert(user);
             }
         }
+
+        public async Task<User> AuthenticateUserAsync(string username, string password)
+        {
+            var user =  _userRepository.GetUserByUsername(username);
+            if (user == null || user.Password != password)
+            {
+                throw new Exception("Invalid credentials!");
+            }
+            return user;
+        }
     }
 }
