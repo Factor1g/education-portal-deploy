@@ -11,8 +11,39 @@ namespace Data.Repositories
 {
     public class SkillRepository : EfBaseRepository<Skill>, ISkillRepository
     {
-        public SkillRepository(DbContext context) : base(context)
+        public SkillRepository(EducationPortalContext context) : base(context)
         {
+        }
+
+        public async Task<List<UserSkill>> GetUserSkills(int userId)
+        {
+            return await context.Set<UserSkill>()
+                .Where(u => u.UserId == userId)                
+                .ToListAsync();
+        }
+
+        public async Task<bool> AcquireSkill(int userId, int skillId)
+        {
+            var user = await context.Set<User>().Include(u => u.Skills).FirstOrDefaultAsync(u => u.Id == userId);
+            var skill = await context.Set<Skill>().FirstOrDefaultAsync(s => s.Id == skillId);
+
+            if (user == null || skill == null)
+                return false;
+
+            var userSkill = user.Skills.FirstOrDefault(us => us.SkillId == skill.Id);
+            if (userSkill == null)
+            {
+                user.Skills.Add(new UserSkill { SkillId = skill.Id, Skill = skill, UserId = user.Id, User = user, Level = 1});
+                System.Console.WriteLine($"New skill acquired: {skill.Name}");
+            }
+            else
+            {
+                userSkill.Level += 1;
+                System.Console.WriteLine($"Skill {skill.Name} leveled up to {userSkill.Level}");
+            }
+
+            await Save();
+            return true;
         }
     }
 }

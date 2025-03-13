@@ -9,9 +9,13 @@ namespace Application
 {
     public interface IMaterialService
     {
-        void CreateMaterial(Material material);
-        void UpdateMaterial(Material material);
-        void DeleteMaterial(int id);
-        Material GetMaterial(int id);
+        Task CreateMaterial(Material material);
+        Task UpdateMaterial(Material material);
+        Task DeleteMaterial(int id);
+        Task<IEnumerable<Material>> GetAllMaterials();
+        Task<Material> GetById(int id);
+        
+        Task CompleteMaterial(int userId, int materialId);
+        Task<List<Material>> GetCompletedMaterials(int userId);
     }
 }

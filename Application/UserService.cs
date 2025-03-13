@@ -17,37 +17,25 @@ namespace Application
         private ICourseRepository _courseRepository;
 
         public UserService( IUserRepository userRepository, ICourseRepository courseRepository)
-        {
-            
+        {            
             _userRepository = userRepository;
             _courseRepository = courseRepository;
-        }        
-
-        public void CompleteCourse(User user, Course course)
+        }
+        
+        public async Task<User> GetById(int userId)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetById(userId);
         }
 
-        public void CompleteMaterial(User user, string materialTitle)
-        {
-            throw new NotImplementedException();
+        public async Task CompleteCourse(User user, Course course)
+        {           
+            user.CompletedCourses.Add(course);
         }
-
-        public void CreateCourse(Course course)
-        {
-            _courseRepository.Insert(course);
-        }
-
-        public void CreateMaterial(Material material)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public void DisplaySkills(User user)
         {
             user.DisplaySkills();
         }
-
         public void EnrollInCourse(User user, Course course)
         {
             if (!user.InProgressCourses.Contains(course))
@@ -56,15 +44,15 @@ namespace Application
             }
         }
 
-        /* --- DONE FOR EFCORE --- */
         public User Login(string username, string password)
         {
             var user = _userRepository.GetUserByUsername(username);
-            if (user != null && user.Password == password)
+            if (user == null || user.Password != password)
             {
-                return user;
+                throw new AuthorizationFailedException("Invalid credentials!");
             }
-            return null;
+            return user;
+
         }
         public void Register(string username, string password)
         {
