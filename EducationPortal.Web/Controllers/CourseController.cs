@@ -1,5 +1,6 @@
 ﻿using Application;
 using Microsoft.AspNetCore.Mvc;
+using EducationPortal.Web.Models;
 
 namespace EducationPortal.Web.Controllers
 {
@@ -51,9 +52,9 @@ namespace EducationPortal.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
     }
 }
