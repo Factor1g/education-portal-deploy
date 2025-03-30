@@ -11,11 +11,11 @@ namespace Application
     {
         Task CreateMaterial(Material material);
         Task UpdateMaterial(Material material);
-        Task DeleteMaterial(int id);
+        Task Delete(int id);
         Task<IEnumerable<Material>> GetAllMaterials();
         Task<Material> GetById(int id);
         
-        Task CompleteMaterial(int userId, int materialId);
-        Task<List<Material>> GetCompletedMaterials(int userId);
+        Task CompleteMaterial(string userId, int materialId);
+        Task<List<Material>> GetCompletedMaterials(string userId);
     }
 }

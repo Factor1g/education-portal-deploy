@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Application
 {
     public class MaterialService : IMaterialService
@@ -29,7 +30,7 @@ namespace Application
             await _materialRepository.Insert(material);
         }
 
-        public async Task DeleteMaterial(int id)
+        public async Task Delete(int id)
         {
             await _materialRepository.Delete(id);
         }
@@ -49,7 +50,7 @@ namespace Application
             await _materialRepository.Update(material);
         }
 
-        public async Task CompleteMaterial(int userId, int materialId)
+        public async Task CompleteMaterial(string userId, int materialId)
         {
             var material = await _materialRepository.GetById(materialId);
             var completedMaterials = await _materialRepository.GetCompletedMaterials(userId);           
@@ -79,9 +80,9 @@ namespace Application
 
         }
 
-        public async Task<List<Material>> GetCompletedMaterials(int userId)
+        public async Task<List<Material>> GetCompletedMaterials(string userId)
         {
             return await _materialRepository.GetCompletedMaterials(userId);
-        }
+        }              
     }
 }

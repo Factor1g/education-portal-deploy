@@ -22,7 +22,7 @@ namespace Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Course>> GetInProgressCourses(int userId)
+        public async Task<List<Course>> GetInProgressCourses(string userId)
         {
             return await context.Set<User>()
                 .Where(u => u.Id == userId)
@@ -31,14 +31,14 @@ namespace Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Course>> GetCompletedCourses(int userId)
+        public async Task<List<Course>> GetCompletedCourses(string userId)
         {
             return await context.Set<User>()
                 .Where(u => u.Id == userId)
                 .SelectMany(u => u.CompletedCourses)
                 .ToListAsync();
         }
-        public async Task<bool> EnrollInCourse(int userId, int courseId)
+        public async Task<bool> EnrollInCourse(string userId, int courseId)
         {
             var user = await context.Set<User>().Include(u => u.InProgressCourses).FirstOrDefaultAsync(u => u.Id == userId);
             var course = await context.Set<Course>().FirstOrDefaultAsync(c => c.Id == courseId);
@@ -67,7 +67,7 @@ namespace Data.Repositories
             return course?.Materials?.ToList() ?? new List<Material>();
         }
 
-        public async Task<bool> AddCompletedCourse(int userId, int courseId)
+        public async Task<bool> AddCompletedCourse(string userId, int courseId)
         {
             var user = await context.Set<User>().Include(u => u.CompletedCourses).FirstOrDefaultAsync(u => u.Id == userId);
             var course = await context.Set<Course>().FirstOrDefaultAsync(c => c.Id == courseId);

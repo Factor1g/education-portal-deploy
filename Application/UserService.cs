@@ -22,7 +22,7 @@ namespace Application
             _courseRepository = courseRepository;
         }
         
-        public async Task<User> GetById(int userId)
+        public async Task<User> GetById(string userId)
         {
             return await _userRepository.GetById(userId);
         }
@@ -44,38 +44,37 @@ namespace Application
             }
         }
 
-        public User Login(string username, string password)
-        {
-            var user = _userRepository.GetUserByUsername(username);
-            if (user == null || user.Password != password)
-            {
-                throw new AuthorizationFailedException("Invalid credentials!");
-            }
-            return user;
+        //public User Login(string username, string password)
+        //{
+        //    var user = _userRepository.GetUserByUsername(username);
+        //    if (user == null || user.Password != password)
+        //    {
+        //        throw new AuthorizationFailedException("Invalid credentials!");
+        //    }
+        //    return user;
+        //}
+        //public void Register(string username, string password)
+        //{
+        //    var existingUser = _userRepository.GetUserByUsername(username);
+        //    if (existingUser != null)
+        //    {
+        //        throw new InvalidOperationException("Username is already in use!");
+        //    }
+        //    else
+        //    {
+        //        var user = new User{ Username = username, Password = password};
+        //        _userRepository.Insert(user);
+        //    }
+        //}
 
-        }
-        public void Register(string username, string password)
-        {
-            var existingUser = _userRepository.GetUserByUsername(username);
-            if (existingUser != null)
-            {
-                throw new InvalidOperationException("Username is already in use!");
-            }
-            else
-            {
-                var user = new User{ Username = username, Password = password};
-                _userRepository.Insert(user);
-            }
-        }
-
-        public async Task<User> AuthenticateUserAsync(string username, string password)
-        {
-            var user =  _userRepository.GetUserByUsername(username);
-            if (user == null || user.Password != password)
-            {
-                throw new Exception("Invalid credentials!");
-            }
-            return user;
-        }
+        //public async Task<User> AuthenticateUserAsync(string username, string password)
+        //{
+        //    var user =  _userRepository.GetUserByUsername(username);
+        //    if (user == null || user.Password != password)
+        //    {
+        //        throw new Exception("Invalid credentials!");
+        //    }
+        //    return user;
+        //}
     }
 }

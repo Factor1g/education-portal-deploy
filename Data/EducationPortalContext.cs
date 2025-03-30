@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.AspNetCore.Identity;
+
 using Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 namespace Data
 {
-    public class EducationPortalContext : DbContext
+    public class EducationPortalContext : IdentityDbContext<User>
     {
-        public EducationPortalContext(DbContextOptions<EducationPortalContext> options) : base(options)
-        {
-
-            }
+        public EducationPortalContext(DbContextOptions<EducationPortalContext> options) : base(options) { }
+        
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -33,6 +35,8 @@ namespace Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<User>()
                 .HasMany(u => u.CompletedCourses)
                 .WithMany();
@@ -43,8 +47,14 @@ namespace Data
 
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Materials)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany();
+                
+
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.Creator)
+                .WithMany()
+                .HasForeignKey(c => c.CreatorId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<UserSkill>()
                 .HasKey(us => new { us.UserId, us.SkillId });
@@ -57,10 +67,7 @@ namespace Data
             modelBuilder.Entity<UserSkill>()
                 .HasOne(us => us.Skill)
                 .WithMany()
-                .HasForeignKey(us => us.SkillId);
-
-            modelBuilder.Entity<Course>()
-                .HasMany(c => c.Materials);                
+                .HasForeignKey(us => us.SkillId);                          
 
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Skills)
@@ -70,6 +77,11 @@ namespace Data
                 .HasValue<Video>("Video")
                 .HasValue<Book>("Book")
                 .HasValue<Article>("Article");
+            modelBuilder.Entity<Material>()
+                .HasOne(m => m.MatCreator)
+                .WithMany()
+                .HasForeignKey(m => m.MatCreatorId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

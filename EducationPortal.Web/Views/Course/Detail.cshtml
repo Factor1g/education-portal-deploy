@@ -1,0 +1,42 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using Model
+@model CourseDetailViewModel
+
+<h2>Course @Model.Course.Name</h2>
+<p><strong>Description:</strong> @Model.Course.Description</p>
+
+@if (Model.Materials?.Any() ?? false)
+{
+    <h4>Materials</h4>
+    <ul>
+        @foreach (var material in Model.Course.Materials.ToList())
+        {
+            <li>@material.Title (@material.GetType().Name)</li>
+        }
+    </ul>
+}
+else
+{
+    <p><em>No materials available for this course.</em></p>
+}
+
+@if (Model.Skills?.Any() ?? false)
+{
+    <h4>Skills</h4>
+    <ul>
+        @foreach (var skill in Model.Skills)
+        {
+            <li>@skill.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p><em>No skills associated with this course.</em></p>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back to Courses</a>

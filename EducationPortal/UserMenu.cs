@@ -51,17 +51,17 @@ namespace Console
             System.Console.Write("Enter password: ");
             var password = System.Console.ReadLine();
 
-            try
-            {
-                _userService.Register(username, password);
-                System.Console.WriteLine("Registration successful!");
-                System.Console.ReadLine();
-            }
-            catch (InvalidOperationException ex)
-            {
-                System.Console.WriteLine(ex.Message);
-                System.Console.ReadLine();
-            }
+            //try
+            //{
+            //    _userService.Register(username, password);
+            //    System.Console.WriteLine("Registration successful!");
+            //    System.Console.ReadLine();
+            //}
+            //catch (InvalidOperationException ex)
+            //{
+            //    System.Console.WriteLine(ex.Message);
+            //    System.Console.ReadLine();
+            //}
         }
 
         //private void Login()

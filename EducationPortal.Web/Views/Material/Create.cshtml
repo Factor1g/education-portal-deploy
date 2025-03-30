@@ -1,0 +1,103 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model MaterialCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Material";
+}
+
+<h2>Create New Material</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" class="form-control" id="materialType" onchange="showMaterialFields(this.value)">
+            <option value="">-- Select Material Type --</option>
+            <option value="Video">Video</option>
+            <option value="Book">Book</option>
+            <option value="Article">Article</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div id="videoFields" style="display:none">
+        <div class="form-group">
+            <label asp-for="Duration"></label>
+            <input asp-for="Duration" class="form-control" />
+            <span asp-validation-for="Duration" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Quality"></label>
+            <input asp-for="Quality" class="form-control" />
+            <span asp-validation-for="Quality" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div id="bookFields" style="display:none">
+        <div class="form-group">
+            <label asp-for="Author"></label>
+            <input asp-for="Author" class="form-control" />
+            <span asp-validation-for="Author" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Pages"></label>
+            <input asp-for="Pages" class="form-control" />
+            <span asp-validation-for="Pages" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Format"></label>
+            <input asp-for="Format" class="form-control" />
+            <span asp-validation-for="Format" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Year"></label>
+            <input asp-for="Year" class="form-control" />
+            <span asp-validation-for="Year" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div id="articleFields" style="display:none">
+        <div class="form-group">
+            <label asp-for="PublicationDate"></label>
+            <input asp-for="PublicationDate" class="form-control" type="date" />
+            <span asp-validation-for="PublicationDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Resource"></label>
+            <input asp-for="Resource" class="form-control" />
+            <span asp-validation-for="Resource" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function showMaterialFields(type) {
+            document.getElementById("videoFields").style.display = type === "Video" ? "block" : "none";
+            document.getElementById("bookFields").style.display = type === "Book" ? "block" : "none";
+            document.getElementById("articleFields").style.display = type === "Article" ? "block" : "none";
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const select = document.getElementById("materialType");
+            if (select && select.value) showMaterialFields(select.value);
+        });
+    </script>
+}

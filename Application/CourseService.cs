@@ -24,14 +24,14 @@ namespace Application
             _skillRepository = skillRepository;
         }
 
-        public void CreateCourse(Course course)
+        public async Task CreateCourse(Course course)
         {
-            _courseRepository.Insert(course);
+            await _courseRepository.Insert(course);
         }     
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _courseRepository.Delete(id);
+            await _courseRepository.Delete(id);
         }
         public async Task<List<Course>> GetAllCourses()
         {
@@ -43,12 +43,12 @@ namespace Application
             return  _courseRepository.GetById(id);
         }
 
-        public async Task<List<Course>> GetCompletedCourses(int userId)
+        public async Task<List<Course>> GetCompletedCourses(string userId)
         {
             return await _courseRepository.GetCompletedCourses(userId);
         }
 
-        public async Task<List<Course>> GetInProgressCourses(int userId)
+        public async Task<List<Course>> GetInProgressCourses(string userId)
         {
             return await _courseRepository.GetInProgressCourses(userId);
         }
@@ -58,11 +58,21 @@ namespace Application
             await _courseRepository.Update(course);
         }
 
-        public async Task<bool> EnrollInCourse(int userId, int courseId)
+        public async Task<List<Material>> GetAllCourseMaterials(int courseId)
+        {
+            return await _courseRepository.GetAllCourseMaterials(courseId);
+        }
+
+        public async Task<List<Skill>> GetAllCourseSkills(int courseId)
+        {
+            return await _courseRepository.GetAllCourseSkills(courseId);
+        }
+
+        public async Task<bool> EnrollInCourse(string userId, int courseId)
         {
             return await _courseRepository.EnrollInCourse(userId, courseId);
         }
-        public async Task<bool> AddCompletedCourse(int userId, int courseId)
+        public async Task<bool> AddCompletedCourse(string userId, int courseId)
         {
             return await _courseRepository.AddCompletedCourse(userId, courseId);
         }

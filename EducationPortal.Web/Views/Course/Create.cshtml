@@ -1,0 +1,90 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model CourseViewModel
+@{
+    ViewData["Title"] = "Create Course";
+}
+
+<h2>Create Course</h2>
+
+<form asp-action="Create" asp-controller="Course" method="post">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Materials</label>
+        <select asp-for="SelectedMaterialIds" asp-items="@(new MultiSelectList(Model.AvailableMaterials, "Id", "Title", Model.SelectedMaterialIds))" multiple class="form-control"></select>
+        @foreach (var id in Model.SelectedMaterialIds ?? new List<int>())
+        {
+                <input type="hidden" name="SelectedMaterialIds" value="@id" />
+        }
+    </div>
+
+    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#addMaterialModal">+ Add Material</button>
+
+    <div class="form-group">
+        <label>Skills</label>
+        <select asp-for="SelectedSkillIds" asp-items="@(new MultiSelectList(Model.AvailableSkills, "Id", "Name", Model.SelectedSkillIds))" multiple class="form-control"></select>
+        @foreach (var id in Model.SelectedSkillIds ?? new List<int>())
+        {
+                <input type="hidden" name="SelectedSkillIds" value="@id" />
+        }
+    </div>
+
+    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#addSkillModal">+ Add Skill</button>
+
+    <button type="submit" class="btn btn-success">Create</button>
+</form>
+
+<!-- Material Modal OUTSIDE form -->
+<div class="modal fade" id="addMaterialModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                @await Html.PartialAsync("_CreateMaterialPartial", new MaterialCreateViewModel())
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Skill Modal OUTSIDE form -->
+<div class="modal fade" id="addSkillModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                @await Html.PartialAsync("_CreateSkillPartial")
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            function showMaterialFields(type) {
+                document.getElementById("videoFields").style.display = type === "Video" ? "block" : "none";
+                document.getElementById("bookFields").style.display = type === "Book" ? "block" : "none";
+                document.getElementById("articleFields").style.display = type === "Article" ? "block" : "none";
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const select = document.getElementById("materialType");
+                if (select && select.value) showMaterialFields(select.value);
+            });
+        </script>
+}

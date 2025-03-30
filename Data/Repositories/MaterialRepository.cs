@@ -15,7 +15,7 @@ namespace Data.Repositories
         {
         }
 
-        public async Task<List<Material>> GetCompletedMaterials(int userId)
+        public async Task<List<Material>> GetCompletedMaterials(string userId)
         {
             return await context.Set<User>()
                 .Where(u => u.Id == userId)
@@ -23,7 +23,7 @@ namespace Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<bool> CompleteMaterial(int userId, int materialId)
+        public async Task<bool> CompleteMaterial(string userId, int materialId)
         {
             var user = await context.Set<User>().Include(u => u.CompletedMaterials).FirstOrDefaultAsync(u => u.Id == userId);
             var material = await context.Set<Material>().FirstOrDefaultAsync(m => m.Id == materialId);
