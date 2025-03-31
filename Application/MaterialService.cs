@@ -66,9 +66,11 @@ namespace Application
                 var courseMaterials = await _courseRepository.GetAllCourseMaterials(course.Id);
                 if (courseMaterials.All(m => completedMaterials.Contains(m)))
                 {
-                    if (!(await _courseRepository.GetCompletedCourses(userId)).Contains(course))
+                    var completedCourses = await _courseRepository.GetCompletedCourses(userId);
+                    if (!completedCourses.Contains(course))
                     {
                         await _courseRepository.AddCompletedCourse(userId, course.Id);
+                        await _courseRepository.RemoveInProgressCourse(userId, course.Id);
 
                         foreach (var skill in await _courseRepository.GetAllCourseSkills(course.Id))
                         {                            

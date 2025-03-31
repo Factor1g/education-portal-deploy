@@ -1,8 +1,56 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<div class="text-center mt-5">
+    <h1 class="display-4">Welcome to the Education Portal</h1>
+    <p class="lead">Learn. Progress. Achieve.</p>
+    <hr class="my-4" />
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Courses</h5>
+                    <p class="card-text">Explore and enroll in available courses.</p>
+                    <a href="/Course/Index" class="btn btn-primary">Browse Courses</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Materials</h5>
+                    <p class="card-text">Access learning materials to improve your knowledge.</p>
+                    <a href="/Material/Index" class="btn btn-success">View Materials</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Skills</h5>
+                    <p class="card-text">Track your skill progress and achievements.</p>
+                    <a href="/Skill/Index" class="btn btn-info">Skill Board</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="/User/Profile" class="btn btn-outline-dark btn-lg">Go to My Profile</a>
+        }
+        else
+        {
+            <a href="/Auth/Login" class="btn btn-outline-primary btn-lg">Login to Start Learning</a>
+        }
+    </div>
 </div>
+<footer class="border-bottom-0 footer text-muted">
+    <div class="container">
+        &copy; 2025 - EducationPortal.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>

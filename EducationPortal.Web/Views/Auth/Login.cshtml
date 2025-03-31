@@ -16,6 +16,13 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Login</button>
+
+    <div class="mt-3">
+        <p>
+            Don't have an account?
+            <a asp-controller="Auth" asp-action="Register">Register here</a>
+        </p>
+    </div>
 </form>
 
 @if (!ViewData.ModelState.IsValid)

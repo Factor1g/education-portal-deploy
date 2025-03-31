@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Interfaces;
 using Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model;
 using System;
@@ -16,12 +17,14 @@ namespace Application
         private readonly ICourseRepository _courseRepository;
         private readonly IMaterialRepository _materialRepository;
         private readonly ISkillRepository _skillRepository;
+        private readonly IMaterialService _materialService;
 
-        public CourseService(ICourseRepository courseRepository, IMaterialRepository materialRepository, ISkillRepository skillRepository)
+        public CourseService(ICourseRepository courseRepository, IMaterialRepository materialRepository, ISkillRepository skillRepository, IMaterialService materialService)
         {
             _courseRepository = courseRepository;
             _materialRepository = materialRepository;
             _skillRepository = skillRepository;
+            _materialService = materialService;
         }
 
         public async Task CreateCourse(Course course)
@@ -70,6 +73,13 @@ namespace Application
 
         public async Task<bool> EnrollInCourse(string userId, int courseId)
         {
+            var courseMaterials = await GetAllCourseMaterials(courseId);
+            var completedMaterials = await _materialService.GetCompletedMaterials(userId);
+            if (courseMaterials.All(m => completedMaterials.Contains(m)))
+            {
+                return await AddCompletedCourse(userId, courseId);                
+            }
+            
             return await _courseRepository.EnrollInCourse(userId, courseId);
         }
         public async Task<bool> AddCompletedCourse(string userId, int courseId)
@@ -129,5 +139,13 @@ namespace Application
             }
         }
 
+        public async Task<int> GetCourseCompletionPercentage(Course course, string userId)
+        {            
+            var completedMaterials = await _materialService.GetCompletedMaterials(userId);
+            var courseMaterials = await GetAllCourseMaterials(course.Id);
+            var completedCount = completedMaterials.Count(m => courseMaterials.Contains(m));
+            var totalCount = courseMaterials.Count;
+            return totalCount > 0 ? (int)((double)completedCount / totalCount * 100) : 0;
+        }
     }
 }

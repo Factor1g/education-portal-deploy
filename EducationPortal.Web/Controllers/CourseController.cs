@@ -22,23 +22,6 @@ namespace EducationPortal.Web.Controllers
             _materialService = material;
             _userManager = userManager;
         }
-        
-        //public async Task<IActionResult> List()
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    var courses = await _courseService.GetAllCourses();
-        //    var inProgress = await _courseService.GetInProgressCourses(user.Id);
-
-        //    var viewModel = new CourseListViewModel
-        //    {
-        //        Courses = courses,
-        //        CurrentUserId = user.Id,
-        //        IsTeacher = await _userManager.IsInRoleAsync(user, "Teacher"),
-        //        SubscribedCourseIds = inProgress.Select(c => c.Id).ToList()
-        //    };
-
-        //    return View(viewModel);
-        //}
 
         [HttpGet]
         [Authorize]
@@ -47,13 +30,16 @@ namespace EducationPortal.Web.Controllers
             var user = await _userManager.GetUserAsync(User);            
             var courses = await _courseService.GetAllCourses();
             var inProgress = await _courseService.GetInProgressCourses(user.Id);
+            var completed = await _courseService.GetCompletedCourses(user.Id);
 
             var ViewModel = new CourseViewModel
             {
                 Courses = courses,
                 CurrentUserId = user.Id,
                 IsTeacher = await _userManager.IsInRoleAsync(user, "Teacher"),
-                SubscribedCourseIds = inProgress.Select(c => c.Id).ToList(),
+                SubscribedCourseIds = inProgress.Select(c => c.Id)
+                    .Union(completed.Select(c => c.Id))
+                    .ToList(),
             };
             return View(ViewModel);
         }
@@ -133,8 +119,10 @@ namespace EducationPortal.Web.Controllers
             }
             else
             {                
-                user.InProgressCourses.Add(course);
+                //user.InProgressCourses.Add(course);
+                await _courseService.EnrollInCourse(user.Id, courseId);
                 await _userManager.UpdateAsync(user);
+
                 TempData["Message"] = "Enrolled successfully!";
             }
             return RedirectToAction("Index", "Course");

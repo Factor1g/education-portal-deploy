@@ -34,14 +34,7 @@ namespace EducationPortal.Web.Controllers
 
             return View(model);
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> CreateSkill(string name, string description)
-        //{
-        //    await _skillService.CreateSkill(new Skill { Name = name, Description = description });
-        //    return RedirectToAction("Create", "Course"); // Re-enter the Course form
-        //}
-
+  
         [HttpGet]
         public IActionResult Create() => View();
 

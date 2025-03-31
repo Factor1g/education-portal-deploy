@@ -93,68 +93,8 @@ namespace EducationPortal.Web.Controllers
             }
             System.Console.WriteLine("Creating material");
             Material material = null;
-
-            //if (model.Type == "Video")
-            //{
-            //    if (model.Duration == null || string.IsNullOrWhiteSpace(model.Quality))
-            //    {
-            //        _logger.LogWarning("Invalid video fields: Duration or Quality missing.");
-            //        ModelState.AddModelError("", "Video must have a duration and quality.");
-            //        return RedirectToAction("Create", "Course");
-            //    }
-
-            //    material = new Video
-            //    {
-            //        Title = model.Title,
-            //        Description = model.Description,
-            //        Duration = model.Duration.Value,
-            //        Quality = model.Quality
-            //    };
-            //}
-            //else if (model.Type == "Book")
-            //{
-            //    if (string.IsNullOrWhiteSpace(model.Author) || model.Pages == null || model.Year == null)
-            //    {
-            //        _logger.LogWarning("Invalid book fields: Author, Pages, or Year missing.");
-            //        ModelState.AddModelError("", "Book must have author, pages, and year.");
-            //        return RedirectToAction("Create", "Course");
-            //    }
-
-            //    material = new Book
-            //    {
-            //        Title = model.Title,
-            //        Description = model.Description,
-            //        Author = model.Author,
-            //        Pages = model.Pages.Value,
-            //        Format = model.Format,
-            //        Year = model.Year.Value
-            //    };
-            //}
-            //else if (model.Type == "Article")
-            //{
-            //    if (model.PublicationDate == null || string.IsNullOrWhiteSpace(model.Resource))
-            //    {
-            //        _logger.LogWarning("Invalid article fields: PublicationDate or Resource missing.");
-            //        ModelState.AddModelError("", "Article must have a publication date and resource.");
-            //        return RedirectToAction("Create", "Course");
-            //    }
-
-            //    material = new Article
-            //    {
-            //        Title = model.Title,
-            //        Description = model.Description,
-            //        PublicationDate = model.PublicationDate.Value,
-            //        Resource = model.Resource
-            //    };
-            //}
-            //else
-            //{
-            //    _logger.LogError("Invalid material type submitted: {Type}", model.Type);
-            //    ModelState.AddModelError("", "Invalid material type selected.");
-            //    return RedirectToAction("Create", "Course");
-            //}
+            
             MapViewModelToMaterial(ref material, model);
-
 
             await _materialService.CreateMaterial(material);
             return RedirectToAction("Create", "Course");
@@ -194,42 +134,7 @@ namespace EducationPortal.Web.Controllers
 
             Material material = null;
 
-            MapViewModelToMaterial(ref material, model);
-            //switch (model.Type)
-            //{
-            //    case "Video":
-            //        material = new Video
-            //        {
-            //            Title = model.Title,
-            //            Description = model.Description,
-            //            Duration = model.Duration ?? 0,
-            //            Quality = model.Quality
-            //        };
-            //        break;
-            //    case "Book":
-            //        material = new Book
-            //        {
-            //            Title = model.Title,
-            //            Description = model.Description,
-            //            Author = model.Author,
-            //            Pages = model.Pages ?? 0,
-            //            Format = model.Format,
-            //            Year = model.Year ?? 0
-            //        };
-            //        break;
-            //    case "Article":
-            //        material = new Article
-            //        {
-            //            Title = model.Title,
-            //            Description = model.Description,
-            //            PublicationDate = model.PublicationDate ?? DateTime.Now,
-            //            Resource = model.Resource
-            //        };
-            //        break;
-            //    default:
-            //        ModelState.AddModelError("", "Invalid material type.");
-            //        return View(model);
-            //}
+            MapViewModelToMaterial(ref material, model);            
 
             var user = await _userManager.GetUserAsync(User);
             material.MatCreatorId = user.Id;

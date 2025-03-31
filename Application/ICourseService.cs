@@ -17,6 +17,7 @@ namespace Application
         Task<bool> AddCompletedCourse(string userId, int courseId);
         Task AddMaterialToCourse(int courseId, int materialId);
         Task AddSkillToCourse(int courseId, int skillId);
+        Task<int> GetCourseCompletionPercentage(Course course, string userId);
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿@using Model;
+@using Application;
 @model UserProfileViewModel
 @{
     ViewData["Title"] = "User Profile";
@@ -17,14 +18,11 @@
     <tbody>
         @foreach (var course in Model.EnrolledCourses)
         {
-            List<Material> courseMaterials = course.Materials.ToList() ?? new List<Material>();
-            var completedCount = courseMaterials.Count(m => Model.CompletedMaterials.Any(cm => cm.Id == m.Id));
-            var total = courseMaterials.Count();
-            var percent = total == 0 ? 0 : (completedCount * 100 / total);
+            List<Material> courseMaterials = course.Materials.ToList() ?? new List<Material>();          
 
             <tr style="background-color:lightgray">
                 <td><b>@course.Name</b></td>
-                <td><b>@percent% completed</b></td>
+                <td>@ViewBag.CourseProgress[course.Id]%</td>
             </tr>
 
             @if (courseMaterials.Any())
