@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using Model;
+@model Material
+
+<h2>Material: @Model.Title</h2>
+<p><strong>Type:</strong> @Model.GetType().Name</p>
+
+<p><strong>Description:</strong> @Model.Description</p>
+
+@if (Model is Video video)
+{
+    <p><strong>Duration:</strong> @video.Duration minutes</p>
+    <p><strong>Quality:</strong> @video.Quality</p>
+}
+else if (Model is Book book)
+{
+    <p><strong>Author:</strong> @book.Author</p>
+    <p><strong>Pages:</strong> @book.Pages</p>
+    <p><strong>Year:</strong> @book.Year</p>
+    <p><strong>Format:</strong> @book.Format</p>
+}
+else if (Model is Article article)
+{
+    <p><strong>Publication Date:</strong> @article.PublicationDate.ToShortDateString()</p>
+    <p><strong>Resource:</strong> @article.Resource</p>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back to Materials</a>

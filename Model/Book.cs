@@ -12,10 +12,5 @@ namespace Model
         public int Pages { get; set; }
         public string Format { get; set; }
         public int Year { get; set; }
-
-        public override void DisplayDetails()
-        {
-            Console.WriteLine($"Book: {Title}, Author: {Author}, Pages: {Pages}, Format: {Format}, Year: {Year}");
-        }
     }
 }

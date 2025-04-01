@@ -1,0 +1,111 @@
+﻿@using Model;
+@using Application;
+@model UserProfileViewModel
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<h2>@Model.Username's Profile</h2>
+
+<h3>Enrolled Courses</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>Progress</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var course in Model.EnrolledCourses)
+        {
+            List<Material> courseMaterials = course.Materials.ToList() ?? new List<Material>();          
+
+            <tr style="background-color:lightgray">
+                <td><b>@course.Name</b></td>
+                <td>@ViewBag.CourseProgress[course.Id]%</td>
+            </tr>
+
+            @if (courseMaterials.Any())
+            {
+                <tr>
+                    <td colspan="2">
+                        Course materials
+                    </td>
+                </tr>
+                @foreach (var material in courseMaterials)
+                {
+                    bool isCompleted = Model.CompletedMaterials.Any(m => m.Id == material.Id);
+                    <tr>                        
+                        <td>
+                            @material.Title                                        
+                        </td>
+                        <td>
+                            @if (!isCompleted)
+                            {
+                                <form asp-action="CompleteMaterial" asp-controller="User" method="post" class="d-inline">
+                                    <input type="hidden" name="materialId" value="@material.Id" />
+                                    <button class="btn btn-sm btn-success" type="submit">Mark as Complete</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-success">✓ Completed</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+<h3>Completed Courses</h3>
+<table class="table">
+    <thead>
+        <tr><th>Name</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var course in Model.CompletedCourses)
+        {
+            <tr><td>@course.Name</td></tr>
+        }
+    </tbody>
+</table>
+
+<h3>Skills</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Skill</th>
+            <th>Level</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var skill in Model.Skills)
+        {
+            <tr>
+                <td>@skill.Skill?.Name</td>
+                <td>@skill.Level</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Completed Materials</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var material in Model.CompletedMaterials)
+        {
+            <tr>
+                <td>@material.Title</td>
+                <td>@material.GetType().Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

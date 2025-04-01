@@ -1,0 +1,76 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model MaterialCreateViewModel
+
+<form asp-action="CreateInline" asp-controller="Material" method="post">
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Material Type</label>
+        <select asp-for="Type" class="form-control" onchange="showMaterialFields(this.value)" required>
+            <option disabled selected>Select Type</option>
+            <option value="Video">Video</option>
+            <option value="Book">Book</option>
+            <option value="Article">Article</option>
+        </select>
+    </div>
+
+    <!-- Video Fields -->
+    <div id="videoFields" style="display:none;">
+        <label asp-for="Duration"></label>
+        <input asp-for="Duration" class="form-control" />
+        <label asp-for="Quality"></label>
+        <input asp-for="Quality" class="form-control" />
+    </div>
+
+    <!-- Book Fields -->
+    <div id="bookFields" style="display:none;">
+        <label asp-for="Author"></label>
+        <input asp-for="Author" class="form-control" />
+        <label asp-for="Pages"></label>
+        <input asp-for="Pages" class="form-control" />
+        <label asp-for="Format"></label>
+        <input asp-for="Format" class="form-control" />
+        <label asp-for="Year"></label>
+        <input asp-for="Year" class="form-control" />
+    </div>
+
+    <!-- Article Fields -->
+    <div id="articleFields" style="display:none;">
+        <label asp-for="PublicationDate"></label>
+        <input asp-for="PublicationDate" type="date" class="form-control" />
+        <label asp-for="Resource"></label>
+        <input asp-for="Resource" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-2">Add Material</button>
+</form>
+
+@section Scripts {
+    <script>
+        function showMaterialFields(type) {
+            document.getElementById("videoFields").style.display = type === "Video" ? "block" : "none";
+            document.getElementById("bookFields").style.display = type === "Book" ? "block" : "none";
+            document.getElementById("articleFields").style.display = type === "Article" ? "block" : "none";
+        }
+
+        // Automatically show correct fields if a type is pre-selected (on modal open)
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectedType = document.querySelector('[name="Type"]').value;
+            if (selectedType) {
+                showMaterialFields(selectedType);
+            }
+        });
+    </script>
+}

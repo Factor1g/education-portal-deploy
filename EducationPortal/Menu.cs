@@ -33,47 +33,47 @@ namespace Console
             string choice = System.Console.ReadLine();
             _loggedInUser = null;
 
-            while (_loggedInUser == null)
-            {
-                if (choice == "1")
-                {
-                    System.Console.Write("Enter username: ");
-                    string username = System.Console.ReadLine();
-                    System.Console.Write("Enter password: ");
-                    string password = System.Console.ReadLine();
-                    try
-                    {
-                        System.Console.WriteLine("Fetching data...");
-                        _loggedInUser = _userService.Login(username, password);
-                    }
-                    catch (Exception e)
-                    {
-                        System.Console.WriteLine(e.Message);
-                    }
-                }
-                else if (choice == "2")
-                {
-                    System.Console.Write("Enter new username: ");
-                    string username = System.Console.ReadLine();
-                    System.Console.Write("Enter new password: ");
-                    string password = System.Console.ReadLine();
-                    try
-                    {
-                        _userService.Register(username, password);
-                    }
-                    catch (Exception e)
-                    {
-                        System.Console.WriteLine(e.Message);
-                    }
-                    System.Console.WriteLine("Registration successful! Please log in.");
-                    choice = "1";
-                }
-                else
-                {
-                    System.Console.WriteLine("Invalid choice. Please select 1 or 2.");
-                    choice = System.Console.ReadLine();
-                }
-            }
+            //while (_loggedInUser == null)
+            //{
+            //    if (choice == "1")
+            //    {
+            //        System.Console.Write("Enter username: ");
+            //        string username = System.Console.ReadLine();
+            //        System.Console.Write("Enter password: ");
+            //        string password = System.Console.ReadLine();
+            //        try
+            //        {
+            //            System.Console.WriteLine("Fetching data...");
+            //            _loggedInUser = _userService.Login(username, password);
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            System.Console.WriteLine(e.Message);
+            //        }
+            //    }
+            //    else if (choice == "2")
+            //    {
+            //        System.Console.Write("Enter new username: ");
+            //        string username = System.Console.ReadLine();
+            //        System.Console.Write("Enter new password: ");
+            //        string password = System.Console.ReadLine();
+            //        try
+            //        {
+            //            _userService.Register(username, password);
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            System.Console.WriteLine(e.Message);
+            //        }
+            //        System.Console.WriteLine("Registration successful! Please log in.");
+            //        choice = "1";
+            //    }
+            //    else
+            //    {
+            //        System.Console.WriteLine("Invalid choice. Please select 1 or 2.");
+            //        choice = System.Console.ReadLine();
+            //    }
+            //}
 
             while (true)
             {                
@@ -361,7 +361,7 @@ namespace Console
         {
             System.Console.Write("Enter material ID to delete: ");
             int id = int.Parse(System.Console.ReadLine());
-            _materialService.DeleteMaterial(id);
+            _materialService.Delete(id);
             System.Console.WriteLine("Material deleted successfully!");
             System.Console.ReadLine();
         }
@@ -409,7 +409,7 @@ namespace Console
         public async Task EnrollInCourse()
         {
             System.Console.Write("Enter course ID to enroll: ");
-            int id = int.Parse(System.Console.ReadLine());            
+            int id = int.Parse(System.Console.ReadLine());
             try
             {
                 await _courseService.EnrollInCourse(_loggedInUser.Id, id);
@@ -419,7 +419,7 @@ namespace Console
             catch (Exception e)
             {
                 System.Console.WriteLine(e.Message);
-            }            
+            }
             System.Console.ReadLine();
         }
         public async Task CreateSkill()
@@ -508,7 +508,7 @@ namespace Console
             }
 
             System.Console.Clear();
-            System.Console.WriteLine($"User Profile: {user.Username}\n");
+            System.Console.WriteLine($"User Profile: {user.UserName}\n");
 
             System.Console.WriteLine("Enrolled Courses:");
             foreach (var course in await _courseService.GetInProgressCourses(user.Id))
@@ -536,7 +536,7 @@ namespace Console
 
             System.Console.WriteLine("\nCourse Completion Progress:");
             foreach (var course in await _courseService.GetInProgressCourses(user.Id))
-            {                
+            {
                 System.Console.WriteLine($"- {course.Name}");
             }
             System.Console.ReadKey();
@@ -546,7 +546,7 @@ namespace Console
         {
             System.Console.Write("Enter material ID to complete: ");
             int id = int.Parse(System.Console.ReadLine());
-            var material= await _materialService.GetById(id);
+            var material = await _materialService.GetById(id);
             try
             {
                 await _materialService.CompleteMaterial(_loggedInUser.Id, id);

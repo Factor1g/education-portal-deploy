@@ -1,0 +1,45 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using EducationPortal.Web.Models;
+@using Model;
+@model MaterialListViewModel
+
+
+<h2>Materials</h2>
+
+<a class="btn btn-primary mb-3" asp-controller="Material" asp-action="Create">+ Create Material</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var material in Model.Materials)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Detail" asp-route-id="@material.Id">@material.Title</a>
+                </td>
+                <td>@material.Description</td>
+                <td>@material.GetType().Name</td>
+                <td>
+                    @if (Model.IsTeacher || material.MatCreatorId == Model.CurrentUserId)
+                    {
+                        <a asp-action="Edit" asp-route-id="@material.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@material.Id" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

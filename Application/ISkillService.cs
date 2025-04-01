@@ -11,10 +11,10 @@ namespace Application
     {
         Task<IEnumerable<Skill>> GetAllSkills();
         Task<Skill> GetById(int id);
-        void CreateSkill(Skill course);
+        Task CreateSkill(Skill course);
         Task Update(Skill course);
-        void Delete(int id);
-        Task<List<UserSkill>> GetUserSkills(int userId);
-        Task<bool> AcquireSkill(int userId, int skillId);
+        Task Delete(int id);
+        Task<List<UserSkill>> GetUserSkills(string userId);
+        Task<bool> AcquireSkill(string userId, int skillId);
     }
 }

@@ -11,9 +11,14 @@ namespace Data.Interfaces
     {
         Task<IEnumerable<TEntity>> GetAll();
         Task<TEntity?> GetById(int id);
+        Task<TEntity?> GetById(string id);
+
         Task<bool> Insert(TEntity entity);
         Task<bool> Update(TEntity entity);
         Task<bool> Delete(TEntity entity);
+
         Task<bool> Delete(int id);
+        Task<bool> Delete(string id);
+
     }
 }
