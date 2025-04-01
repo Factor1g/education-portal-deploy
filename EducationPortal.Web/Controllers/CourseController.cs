@@ -118,8 +118,7 @@ namespace EducationPortal.Web.Controllers
                 TempData["Message"] = "Already enrolled!";
             }
             else
-            {                
-                //user.InProgressCourses.Add(course);
+            {              
                 await _courseService.EnrollInCourse(user.Id, courseId);
                 await _userManager.UpdateAsync(user);
 

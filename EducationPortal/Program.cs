@@ -15,26 +15,7 @@ namespace EducationPortal
     internal class Program
     {
         static async Task Main(string[] args)
-        {
-            //IDataRepository dataRepository = new FileDataRepository();
-            //var context = new EducationPortalContext();
-            //IUserRepository userRepository = new UserRepository(context);
-            //ICourseRepository courseRepository = new CourseRepository(context);
-            //IMaterialRepository materialRepository = new MaterialRepository(context);
-
-            //IUserService userService = new UserService(userRepository,courseRepository);
-            //ICourseService courseService = new CourseService(courseRepository);
-            //IMaterialService materialService = new MaterialService(materialRepository);
-
-            //var builder = Console.DependencyInjection.AddEducationPortalDependencies(args);
-            //var configuration = builder.Configuration; // This retrieves the IConfiguration instance
-
-            //builder.Services.AddEducationPortalDependencies(configuration); // Pass to DI
-
-
-            //IMenu menu = new Menu(userService, courseService, materialService);
-            //menu.Start();
-            
+        {     
                 System.Console.WriteLine("App starting...");
                 var configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory()) 

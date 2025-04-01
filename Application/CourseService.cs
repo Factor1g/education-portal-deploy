@@ -94,13 +94,11 @@ namespace Application
 
             if (course == null)
             {
-                throw new CourseNotFoundException("Course not found!");
-                return;
+                throw new CourseNotFoundException("Course not found!");                
             }
             if (material == null)
             {
-                throw new MaterialNotFoundException("Material not found!");
-                return;
+                throw new MaterialNotFoundException("Material not found!");                
             }
 
             if (!course.Materials.Contains(material))

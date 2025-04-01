@@ -13,10 +13,5 @@ namespace Model
         public string Description { get; set; }  
         public string? SkillCreatorId { get; set; }
         public User? SkillCreator { get; set; }
-
-        public void DisplayDetails()
-        {
-            Console.WriteLine($"Skill: {Name}, Description: {Description}");
-        }
     }
 }

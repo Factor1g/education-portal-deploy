@@ -15,18 +15,10 @@ namespace Data.Repositories
         {
         }
 
-        //public async Task<List<UserSkill>> GetUserSkills(int userId)
-        //{
-        //    return await context.Set<UserSkill>()
-        //        .Where(u => u.UserId == userId) //CHANGED TOSTRING
-        //        .Include(us => us.Skill)
-        //        .ToListAsync();
-        //}
-
         public async Task<List<UserSkill>> GetUserSkills(string userId)
         {
             return await context.Set<UserSkill>()
-                .Where(u => u.UserId == userId) //CHANGED TOSTRING
+                .Where(u => u.UserId == userId)
                 .Include(us => us.Skill)
                 .ToListAsync();
         }
@@ -42,7 +34,7 @@ namespace Data.Repositories
             var userSkill = user.Skills.FirstOrDefault(us => us.SkillId == skill.Id);
             if (userSkill == null)
             {
-                user.Skills.Add(new UserSkill { SkillId = skill.Id, Skill = skill, UserId = user.Id.ToString(), User = user, Level = 1}); //CHANGED TOSTRING
+                user.Skills.Add(new UserSkill { SkillId = skill.Id, Skill = skill, UserId = user.Id.ToString(), User = user, Level = 1});
                 System.Console.WriteLine($"New skill acquired: {skill.Name}");
             }
             else

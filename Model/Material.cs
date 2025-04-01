@@ -7,7 +7,5 @@
         public string Description { get; set; }        
         public string? MatCreatorId { get; set; }
         public User MatCreator { get; set; }
-
-        public abstract void DisplayDetails();
     }
 }

@@ -31,11 +31,7 @@ namespace Application
         {           
             user.CompletedCourses.Add(course);
         }
-        
-        public void DisplaySkills(User user)
-        {
-            user.DisplaySkills();
-        }
+       
         public void EnrollInCourse(User user, Course course)
         {
             if (!user.InProgressCourses.Contains(course))
@@ -43,38 +39,5 @@ namespace Application
                 user.InProgressCourses.Add(course);
             }
         }
-
-        //public User Login(string username, string password)
-        //{
-        //    var user = _userRepository.GetUserByUsername(username);
-        //    if (user == null || user.Password != password)
-        //    {
-        //        throw new AuthorizationFailedException("Invalid credentials!");
-        //    }
-        //    return user;
-        //}
-        //public void Register(string username, string password)
-        //{
-        //    var existingUser = _userRepository.GetUserByUsername(username);
-        //    if (existingUser != null)
-        //    {
-        //        throw new InvalidOperationException("Username is already in use!");
-        //    }
-        //    else
-        //    {
-        //        var user = new User{ Username = username, Password = password};
-        //        _userRepository.Insert(user);
-        //    }
-        //}
-
-        //public async Task<User> AuthenticateUserAsync(string username, string password)
-        //{
-        //    var user =  _userRepository.GetUserByUsername(username);
-        //    if (user == null || user.Password != password)
-        //    {
-        //        throw new Exception("Invalid credentials!");
-        //    }
-        //    return user;
-        //}
     }
 }

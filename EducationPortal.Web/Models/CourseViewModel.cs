@@ -15,7 +15,7 @@ namespace EducationPortal.Web.Models
         public bool IsTeacher { get; set; }
         public List<int>? SubscribedCourseIds { get; set; }
 
-        // Optional future support for material or skill selection
+
         public List<int> SelectedMaterialIds { get; set; } = new();
         public List<int> SelectedSkillIds { get; set; } = new();
 

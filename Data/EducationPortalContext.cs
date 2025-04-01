@@ -17,12 +17,6 @@ namespace Data
     public class EducationPortalContext : IdentityDbContext<User>
     {
         public EducationPortalContext(DbContextOptions<EducationPortalContext> options) : base(options) { }
-        
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=EducationPortalDB;Trusted_Connection=True;TrustServerCertificate=True;");
-        //}
 
         public DbSet<User> Users { get; set; }
         public DbSet<Course> Courses { get; set; }

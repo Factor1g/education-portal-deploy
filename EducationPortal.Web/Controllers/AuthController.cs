@@ -41,7 +41,7 @@ namespace EducationPortal.Web.Controllers
             if (result.Succeeded)
             {
                 System.Console.WriteLine("User created!");
-                await _userManager.AddToRoleAsync(user, role); // Assign default role
+                await _userManager.AddToRoleAsync(user, role);
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Profile", "User");
             }

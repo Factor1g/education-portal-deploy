@@ -20,7 +20,7 @@
         @foreach (var course in Model.Courses)
         {
             <tr>
-                <td>@course.Name</td>
+                <td><a asp-action="Detail" asp-route-id="@course.Id">@course.Name</a></td>
                 <td>@course.Description</td>
                 <td>
                     @if (Model.IsTeacher || course.CreatorId == Model.CurrentUserId)

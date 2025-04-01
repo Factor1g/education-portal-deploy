@@ -45,8 +45,7 @@ namespace Data.Repositories
 
             if (user == null || course == null)
             {
-                throw new CourseNotFoundException("No course was found with given ID!");
-                return false;
+                throw new CourseNotFoundException("No course was found with given ID!");                
             }
 
 
@@ -78,8 +77,7 @@ namespace Data.Repositories
 
             if (user == null || course == null)
             {
-                throw new CourseNotFoundException("No course was found with given ID!");
-                return false;
+                throw new CourseNotFoundException("No course was found with given ID!");                
             }
 
             if (!user.CompletedCourses.Contains(course))

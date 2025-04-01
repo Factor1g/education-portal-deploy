@@ -31,7 +31,6 @@ namespace Data.Repositories
             if (user == null || material == null)
             {
                 throw new MaterialNotFoundException("No material was found with given ID!");
-                return false;
             }
             if (!user.CompletedMaterials.Contains(material))
             {

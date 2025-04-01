@@ -49,7 +49,20 @@ namespace EducationPortal.Web.Controllers
 
             await _skillService.CreateSkill(model);
             return RedirectToAction("Index","Skill");
-        }       
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateSkillInLine(Skill model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            model.SkillCreatorId = user.Id;
+            model.SkillCreator = user;
+
+            await _skillService.CreateSkill(model);
+            return RedirectToAction("Create", "Course");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)

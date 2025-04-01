@@ -8,13 +8,8 @@ using System.Threading.Tasks;
 namespace Application
 {
     public interface IUserService
-    {
-        //void Register(string username, string password);
-        //User Login (string username, string password);
-        Task<User> GetById(string userId);
-        void DisplaySkills(User user);        
-        void EnrollInCourse(User user, Course course);
-
-        //Task<User> AuthenticateUserAsync(string username, string password);
+    {        
+        Task<User> GetById(string userId);             
+        void EnrollInCourse(User user, Course course);        
     }
 }

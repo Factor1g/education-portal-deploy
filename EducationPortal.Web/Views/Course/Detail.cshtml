@@ -7,11 +7,11 @@
 @model CourseDetailViewModel
 
 <h2>Course @Model.Course.Name</h2>
-<p><strong>Description:</strong> @Model.Course.Description</p>
+<h4>Description:</h4> @Model.Course.Description</p>
 
 @if (Model.Materials?.Any() ?? false)
 {
-    <h4>Materials</h4>
+    <h5>Materials</h5>
     <ul>
         @foreach (var material in Model.Course.Materials.ToList())
         {
@@ -26,7 +26,7 @@ else
 
 @if (Model.Skills?.Any() ?? false)
 {
-    <h4>Skills</h4>
+    <h5>Skills</h5>
     <ul>
         @foreach (var skill in Model.Skills)
         {
