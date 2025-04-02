@@ -10,9 +10,5 @@ namespace Model
     {
         public int Duration { get; set; }
         public string Quality { get; set; }
-        public override void DisplayDetails()
-        {
-            Console.WriteLine($"Video: {Title}, Duration: {Duration} mins, Quality: {Quality}");
-        }
     }
 }

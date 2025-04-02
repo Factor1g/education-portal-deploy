@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Interfaces;
 using Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model;
 using System;
@@ -16,22 +17,24 @@ namespace Application
         private readonly ICourseRepository _courseRepository;
         private readonly IMaterialRepository _materialRepository;
         private readonly ISkillRepository _skillRepository;
+        private readonly IMaterialService _materialService;
 
-        public CourseService(ICourseRepository courseRepository, IMaterialRepository materialRepository, ISkillRepository skillRepository)
+        public CourseService(ICourseRepository courseRepository, IMaterialRepository materialRepository, ISkillRepository skillRepository, IMaterialService materialService)
         {
             _courseRepository = courseRepository;
             _materialRepository = materialRepository;
             _skillRepository = skillRepository;
+            _materialService = materialService;
         }
 
-        public void CreateCourse(Course course)
+        public async Task CreateCourse(Course course)
         {
-            _courseRepository.Insert(course);
+            await _courseRepository.Insert(course);
         }     
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _courseRepository.Delete(id);
+            await _courseRepository.Delete(id);
         }
         public async Task<List<Course>> GetAllCourses()
         {
@@ -43,12 +46,12 @@ namespace Application
             return  _courseRepository.GetById(id);
         }
 
-        public async Task<List<Course>> GetCompletedCourses(int userId)
+        public async Task<List<Course>> GetCompletedCourses(string userId)
         {
             return await _courseRepository.GetCompletedCourses(userId);
         }
 
-        public async Task<List<Course>> GetInProgressCourses(int userId)
+        public async Task<List<Course>> GetInProgressCourses(string userId)
         {
             return await _courseRepository.GetInProgressCourses(userId);
         }
@@ -58,11 +61,28 @@ namespace Application
             await _courseRepository.Update(course);
         }
 
-        public async Task<bool> EnrollInCourse(int userId, int courseId)
+        public async Task<List<Material>> GetAllCourseMaterials(int courseId)
         {
+            return await _courseRepository.GetAllCourseMaterials(courseId);
+        }
+
+        public async Task<List<Skill>> GetAllCourseSkills(int courseId)
+        {
+            return await _courseRepository.GetAllCourseSkills(courseId);
+        }
+
+        public async Task<bool> EnrollInCourse(string userId, int courseId)
+        {
+            var courseMaterials = await GetAllCourseMaterials(courseId);
+            var completedMaterials = await _materialService.GetCompletedMaterials(userId);
+            if (courseMaterials.All(m => completedMaterials.Contains(m)))
+            {
+                return await AddCompletedCourse(userId, courseId);                
+            }
+            
             return await _courseRepository.EnrollInCourse(userId, courseId);
         }
-        public async Task<bool> AddCompletedCourse(int userId, int courseId)
+        public async Task<bool> AddCompletedCourse(string userId, int courseId)
         {
             return await _courseRepository.AddCompletedCourse(userId, courseId);
         }
@@ -74,13 +94,11 @@ namespace Application
 
             if (course == null)
             {
-                throw new CourseNotFoundException("Course not found!");
-                return;
+                throw new CourseNotFoundException("Course not found!");                
             }
             if (material == null)
             {
-                throw new MaterialNotFoundException("Material not found!");
-                return;
+                throw new MaterialNotFoundException("Material not found!");                
             }
 
             if (!course.Materials.Contains(material))
@@ -119,5 +137,13 @@ namespace Application
             }
         }
 
+        public async Task<int> GetCourseCompletionPercentage(Course course, string userId)
+        {            
+            var completedMaterials = await _materialService.GetCompletedMaterials(userId);
+            var courseMaterials = await GetAllCourseMaterials(course.Id);
+            var completedCount = completedMaterials.Count(m => courseMaterials.Contains(m));
+            var totalCount = courseMaterials.Count;
+            return totalCount > 0 ? (int)((double)completedCount / totalCount * 100) : 0;
+        }
     }
 }

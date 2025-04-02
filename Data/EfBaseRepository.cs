@@ -27,8 +27,13 @@ namespace Data
         public async Task<TEntity?> GetById(int id)
         {
             return await context.Set<TEntity>().FindAsync(id);
-        }     
-        
+        }
+
+        public async Task<TEntity?> GetById(string id)
+        {
+            return await context.Set<TEntity>().FindAsync(id);
+        }
+
         public async Task<bool> Delete(TEntity entity)
         {
             context.Set<TEntity>().Remove(entity);            
@@ -49,6 +54,13 @@ namespace Data
             TEntity? entity = await GetById(id);
             return entity == null ? false : await Delete(entity);
         }
+
+        public async Task<bool> Delete(string id)
+        {
+            TEntity? entity = await GetById(id);
+            return entity == null ? false : await Delete(entity);
+        }
+
         public async Task<bool> Save()
         {
             try

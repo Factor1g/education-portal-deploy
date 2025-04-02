@@ -17,14 +17,14 @@ namespace Application
             _skillRepository = skillRepository;
         }
 
-        public void CreateSkill(Skill skill)
+        public async Task CreateSkill(Skill skill)
         {
-            _skillRepository.Insert(skill);
+            await _skillRepository.Insert(skill);
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _skillRepository.Delete(id);
+            await _skillRepository.Delete(id);
         }
 
         public async Task<IEnumerable<Skill>> GetAllSkills()
@@ -37,7 +37,7 @@ namespace Application
             return await _skillRepository.GetById(id);
         }
 
-        public async Task<List<UserSkill>> GetUserSkills(int userId)
+        public async Task<List<UserSkill>> GetUserSkills(string userId)
         {
             return await _skillRepository.GetUserSkills(userId);
         }
@@ -47,7 +47,7 @@ namespace Application
             await _skillRepository.Update(skill);
         }
 
-        public async Task<bool> AcquireSkill(int userId, int skillId)
+        public async Task<bool> AcquireSkill(string userId, int skillId)
         {
 
             return await _skillRepository.AcquireSkill(userId, skillId);

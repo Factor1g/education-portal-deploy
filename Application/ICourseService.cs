@@ -6,15 +6,18 @@ namespace Application
     {
         Task<List<Course>> GetAllCourses();
         Task<Course> GetById(int id);
-        void CreateCourse(Course course);         
+        Task CreateCourse(Course course);         
         Task Update(Course course);
-        void Delete(int id);
-        Task<List<Course>> GetInProgressCourses(int userId);
-        Task<List<Course>> GetCompletedCourses(int userId);
-        Task<bool> EnrollInCourse(int userId, int courseId);
-        Task<bool> AddCompletedCourse(int userId, int courseId);
+        Task Delete(int id);
+        Task<List<Material>> GetAllCourseMaterials(int courseId);
+        Task<List<Skill>> GetAllCourseSkills(int courseId);
+        Task<List<Course>> GetInProgressCourses(string userId);
+        Task<List<Course>> GetCompletedCourses(string userId);
+        Task<bool> EnrollInCourse(string userId, int courseId);
+        Task<bool> AddCompletedCourse(string userId, int courseId);
         Task AddMaterialToCourse(int courseId, int materialId);
         Task AddSkillToCourse(int courseId, int skillId);
+        Task<int> GetCourseCompletionPercentage(Course course, string userId);
     }
 }
 

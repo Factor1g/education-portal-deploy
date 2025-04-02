@@ -16,7 +16,7 @@ namespace Data.Repositories
 
         public User GetUserByUsername(string username)
         {
-            var user = context.Set<User>().FirstOrDefault(x => x.Username == username);
+            var user = context.Set<User>().FirstOrDefault(x => x.UserName == username);
             return user;
         }
     }

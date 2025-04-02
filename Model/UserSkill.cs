@@ -8,15 +8,10 @@ namespace Model
 {
     public class UserSkill
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
         public int SkillId { get; set; }
         public Skill Skill { get; set; }
         public int Level { get; set; } = 1;
-
-        public void DisplayDetails()
-        {
-            Console.WriteLine($"Skill: {Skill.Name}, Level: {Level}, Description: {Skill.Description}");
-        }
     }
 }

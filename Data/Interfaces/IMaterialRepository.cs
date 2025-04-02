@@ -9,7 +9,7 @@ namespace Data.Interfaces
 {
     public interface IMaterialRepository : IRepository<Material>
     {
-        Task<List<Material>> GetCompletedMaterials(int userId);
-        Task<bool> CompleteMaterial(int userId, int materialId);
+        Task<List<Material>> GetCompletedMaterials(string userId);
+        Task<bool> CompleteMaterial(string userId, int materialId);
     }
 }
