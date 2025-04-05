@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model;
+using Model.Exceptions;
 namespace Data.Repositories
 {
     public class CourseRepository : EfBaseRepository<Course>, ICourseRepository
@@ -114,6 +115,30 @@ namespace Data.Repositories
             }
 
             return false;
+        }
+
+        public async Task Update(Course course, List<Material> newMaterials, List<Skill> newSkills)
+        {
+            var existing = await context.Set<Course>()
+                .Include(c => c.Materials)
+                .Include(c => c.Skills)
+                .FirstOrDefaultAsync(c => c.Id == course.Id);
+
+            if (existing == null) throw new CourseNotFoundException("Course not found.");
+
+            existing.Name = course.Name;
+            existing.Description = course.Description;
+
+            existing.Materials.Clear();
+            existing.Skills.Clear();
+
+            foreach (var m in newMaterials)
+                existing.Materials.Add(m);
+
+            foreach (var s in newSkills)
+                existing.Skills.Add(s);
+
+            await context.SaveChangesAsync();
         }
     }
 }

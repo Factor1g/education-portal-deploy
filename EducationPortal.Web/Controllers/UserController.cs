@@ -44,7 +44,6 @@ namespace EducationPortal.Web.Controllers
             var user = await _userService.GetById(userId);
             if (user == null)
             {
-                System.Console.WriteLine("User not found in DB!");
                 return NotFound();
             }
 

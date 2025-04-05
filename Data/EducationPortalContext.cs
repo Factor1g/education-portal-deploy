@@ -33,11 +33,15 @@ namespace Data
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.CompletedCourses)
-                .WithMany();
+                .WithMany()
+                .UsingEntity(j => j.ToTable("CompletedCourses"));
+
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.InProgressCourses)
-                .WithMany();
+                .WithMany()
+                .UsingEntity(j => j.ToTable("InProgressCourses"));
+
 
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.Materials)
@@ -72,9 +76,9 @@ namespace Data
                 .HasValue<Book>("Book")
                 .HasValue<Article>("Article");
             modelBuilder.Entity<Material>()
-                .HasOne(m => m.MatCreator)
+                .HasOne(m => m.Creator)
                 .WithMany()
-                .HasForeignKey(m => m.MatCreatorId)
+                .HasForeignKey(m => m.CreatorId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

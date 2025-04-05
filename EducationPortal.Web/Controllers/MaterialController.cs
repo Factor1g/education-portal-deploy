@@ -6,6 +6,7 @@ using EducationPortal.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using EducationPortal.Model;
 
 namespace EducationPortal.Web.Controllers
 {
@@ -90,10 +91,9 @@ namespace EducationPortal.Web.Controllers
                 }
 
                 return RedirectToAction("Create", "Course");
-            }
-            System.Console.WriteLine("Creating material");
+            }            
             Material material = null;
-            
+
             MapViewModelToMaterial(ref material, model);
 
             await _materialService.CreateMaterial(material);
@@ -110,7 +110,7 @@ namespace EducationPortal.Web.Controllers
             {
                 Materials = materials.ToList(),
                 CurrentUserId = user.Id,
-                IsTeacher = await _userManager.IsInRoleAsync(user, "Teacher")
+                IsTeacher = await _userManager.IsInRoleAsync(user, Roles.Teacher)
             };
 
             return View(viewModel);
@@ -134,10 +134,10 @@ namespace EducationPortal.Web.Controllers
 
             Material material = null;
 
-            MapViewModelToMaterial(ref material, model);            
+            MapViewModelToMaterial(ref material, model);
 
             var user = await _userManager.GetUserAsync(User);
-            material.MatCreatorId = user.Id;
+            material.CreatorId = user.Id;
 
             await _materialService.CreateMaterial(material);
             return RedirectToAction("Index", "Material");
@@ -160,7 +160,7 @@ namespace EducationPortal.Web.Controllers
         }
 
         private void MapViewModelToExistingMaterial(Material material, MaterialCreateViewModel model)
-        {           
+        {
             switch (material)
             {
                 case Video video:
@@ -185,8 +185,7 @@ namespace EducationPortal.Web.Controllers
         }
 
         private void MapViewModelToMaterial(ref Material material, MaterialCreateViewModel model)
-        {           
-
+        {
             switch (model.Type)
             {
                 case "Video":
@@ -218,5 +217,6 @@ namespace EducationPortal.Web.Controllers
             material.Title = model.Title;
             material.Description = model.Description;
         }
+
     }
 }

@@ -64,8 +64,7 @@
             document.getElementById("bookFields").style.display = type === "Book" ? "block" : "none";
             document.getElementById("articleFields").style.display = type === "Article" ? "block" : "none";
         }
-
-        // Automatically show correct fields if a type is pre-selected (on modal open)
+        
         document.addEventListener('DOMContentLoaded', function () {
             const selectedType = document.querySelector('[name="Type"]').value;
             if (selectedType) {

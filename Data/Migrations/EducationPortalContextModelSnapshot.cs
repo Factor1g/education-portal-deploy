@@ -64,7 +64,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CourseUser");
+                    b.ToTable("CompletedCourses", (string)null);
                 });
 
             modelBuilder.Entity("CourseUser1", b =>
@@ -79,7 +79,7 @@ namespace Data.Migrations
 
                     b.HasIndex("User1Id");
 
-                    b.ToTable("CourseUser1");
+                    b.ToTable("InProgressCourses", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -249,12 +249,12 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MatCreatorId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MaterialType")
                         .IsRequired()
@@ -270,7 +270,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MatCreatorId");
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("UserId");
 
@@ -566,16 +566,16 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Model.Material", b =>
                 {
-                    b.HasOne("Model.User", "MatCreator")
+                    b.HasOne("Model.User", "Creator")
                         .WithMany()
-                        .HasForeignKey("MatCreatorId")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Model.User", null)
                         .WithMany("CompletedMaterials")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("MatCreator");
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("Model.Skill", b =>

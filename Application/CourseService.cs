@@ -4,11 +4,13 @@ using Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model;
+using Model.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Application
 {
@@ -59,6 +61,17 @@ namespace Application
         public async Task Update(Course course)
         {
             await _courseRepository.Update(course);
+        }
+
+        public async Task Update(int id, string name, string description, List<Material> materials, List<Skill> skills)
+        {
+            var course = await _courseRepository.GetById(id);
+            if (course == null) throw new Exception("Course not found");
+
+            course.Name = name;
+            course.Description = description;
+
+            await _courseRepository.Update(course, materials, skills);
         }
 
         public async Task<List<Material>> GetAllCourseMaterials(int courseId)
@@ -135,6 +148,16 @@ namespace Application
             {
                 throw new InvalidOperationException("Invalid operation!");
             }
+        }
+
+        public async Task<List<int>> SubscribedCourseIds(string userId)
+        {
+            var inProgress = await GetInProgressCourses(userId);
+            var completed = await GetCompletedCourses(userId);
+
+            return inProgress.Select(c => c.Id)
+                .Union(completed.Select(c => c.Id))
+                .ToList();
         }
 
         public async Task<int> GetCourseCompletionPercentage(Course course, string userId)

@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Microsoft.AspNetCore.Identity;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace Application
 {
     public interface IUserService
     {        
-        Task<User> GetById(string userId);             
+        Task<User> GetById(string userId);
+        Task<IdentityResult> RegisterUser(string username, string password, string role);
         void EnrollInCourse(User user, Course course);        
     }
 }

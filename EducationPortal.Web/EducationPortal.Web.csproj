@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\CourseListViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Course\Course.cshtml" />
+    <Content Remove="Views\Course\List.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\EducationPortal\Console.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />

@@ -1,4 +1,5 @@
 ﻿using Application;
+using EducationPortal.Model;
 using EducationPortal.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -29,7 +30,7 @@ namespace EducationPortal.Web.Controllers
             {
                 Skills = skills.ToList(),
                 CurrentUserId = user.Id,
-                IsTeacher = await _userManager.IsInRoleAsync(user, "Teacher")
+                IsTeacher = await _userManager.IsInRoleAsync(user, Roles.Teacher)
             };
 
             return View(model);
@@ -77,7 +78,9 @@ namespace EducationPortal.Web.Controllers
         public async Task<IActionResult> Edit(Skill model)
         {
             if (!ModelState.IsValid) return View(model);
-
+            var user = await _userManager.GetUserAsync(User);
+            model.SkillCreatorId = user.Id;
+            model.SkillCreator = user;
             await _skillService.Update(model);
             return RedirectToAction("Index");
         }

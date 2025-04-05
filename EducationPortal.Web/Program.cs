@@ -1,7 +1,10 @@
 using Console;
 using Data;
+using EducationPortal.Web.Controllers;
+
 using Microsoft.AspNetCore.Identity;
 using Model;
+using EducationPortal.Model;
 
 namespace EducationPortal.Web
 {
@@ -37,7 +40,7 @@ namespace EducationPortal.Web
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-                string[] roles = { "Student", "Teacher" };
+                string[] roles = Roles.All;
 
                 foreach (var role in roles)
                 {

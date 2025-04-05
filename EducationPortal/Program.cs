@@ -28,7 +28,7 @@ namespace EducationPortal
 
                         IConfiguration configuration = context.Configuration;
 
-                        services.AddEducationPortalDependencies(configuration);
+                        services.AddEducationPortalDependenciesConsole(configuration);
                     })
                     .Build();
                 await host.StartAsync();

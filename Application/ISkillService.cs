@@ -16,5 +16,6 @@ namespace Application
         Task Delete(int id);
         Task<List<UserSkill>> GetUserSkills(string userId);
         Task<bool> AcquireSkill(string userId, int skillId);
+        Task<List<Skill>> GetSelectedSkills(List<int> selectedSkillIds);
     }
 }

@@ -18,7 +18,7 @@
             <th>Title</th>
             <th>Description</th>
             <th>Type</th>
-            <th>Actions</th>
+            <th class="table-action">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -30,8 +30,8 @@
                 </td>
                 <td>@material.Description</td>
                 <td>@material.GetType().Name</td>
-                <td>
-                    @if (Model.IsTeacher || material.MatCreatorId == Model.CurrentUserId)
+                <td class="table-action">
+                    @if (Model.IsTeacher || material.CreatorId == Model.CurrentUserId)
                     {
                         <a asp-action="Edit" asp-route-id="@material.Id" class="btn btn-warning btn-sm">Edit</a>
                         <form asp-action="Delete" asp-route-id="@material.Id" method="post" style="display:inline">

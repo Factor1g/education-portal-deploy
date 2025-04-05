@@ -17,5 +17,6 @@ namespace Data.Interfaces
         Task<bool> AddCompletedCourse(string userId, int courseId);
         Task<List<Skill>> GetAllCourseSkills(int courseId);
         Task<bool> RemoveInProgressCourse(string userId, int courseId);
+        Task Update(Course course, List<Material> newMaterials, List<Skill> newSkills);
     }
 }

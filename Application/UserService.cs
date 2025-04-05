@@ -1,11 +1,16 @@
 ﻿using Data;
 using Data.Interfaces;
+using EducationPortal.Model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+
 
 namespace Application
 {
@@ -15,11 +20,16 @@ namespace Application
         
         private IUserRepository _userRepository;
         private ICourseRepository _courseRepository;
+        private UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserService( IUserRepository userRepository, ICourseRepository courseRepository)
+
+        public UserService( IUserRepository userRepository, ICourseRepository courseRepository, UserManager<User> userManager, SignInManager<User> signInManager)
         {            
             _userRepository = userRepository;
             _courseRepository = courseRepository;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
         
         public async Task<User> GetById(string userId)
@@ -39,5 +49,26 @@ namespace Application
                 user.InProgressCourses.Add(course);
             }
         }
+
+        public async Task<IdentityResult> RegisterUser(string username,  string password, string role)
+        {
+            var normalizedRole = role == Roles.Teacher ? Roles.Teacher : Roles.Student;
+            var user = new User
+            {
+                UserName = username,
+                Role = normalizedRole
+            };
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, normalizedRole);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+            }            
+
+            return result;
+        }
+
+
     }
 }

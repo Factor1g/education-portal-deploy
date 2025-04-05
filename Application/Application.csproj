@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Compile Remove="DependencyInjection.cs" />
+    <Compile Remove="MaterialNotFoundException.cs" />
+    <Compile Remove="UserServiceConsole.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Model\Model.csproj" />
+	  <ProjectReference Include="..\Model\Model.csproj" />
+	  
   </ItemGroup>
 
 </Project>

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+
 namespace Application
 {
     public class MaterialService : IMaterialService
@@ -28,7 +29,7 @@ namespace Application
         public async Task CreateMaterial(Material material)
         {
             await _materialRepository.Insert(material);
-        }
+        }        
 
         public async Task Delete(int id)
         {
@@ -85,6 +86,11 @@ namespace Application
         public async Task<List<Material>> GetCompletedMaterials(string userId)
         {
             return await _materialRepository.GetCompletedMaterials(userId);
-        }              
+        }
+        
+        public async Task<List<Material>> GetSelectedMaterials(List<int> selectedMaterialIds)
+        {
+            return (await GetAllMaterials()).Where(m =>  selectedMaterialIds.Contains(m.Id)).ToList();
+        }
     }
 }

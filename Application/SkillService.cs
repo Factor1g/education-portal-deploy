@@ -52,5 +52,9 @@ namespace Application
 
             return await _skillRepository.AcquireSkill(userId, skillId);
         }
+        public async Task<List<Skill>> GetSelectedSkills(List<int> selectedSkillIds)
+        {
+            return (await GetAllSkills()).Where(m => selectedSkillIds.Contains(m.Id)).ToList();
+        }
     }
 }

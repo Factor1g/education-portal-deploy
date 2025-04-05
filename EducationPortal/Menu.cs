@@ -10,15 +10,15 @@ namespace Console
 {
     public class Menu : IMenu
     {
-        private readonly IUserService _userService;
+        //private readonly IUserService _userService;
         private readonly ICourseService _courseService;
         private readonly IMaterialService _materialService;
         private readonly ISkillService _skillService;
         private User _loggedInUser;
 
-        public Menu(IUserService userService, ICourseService courseService, IMaterialService materialService, ISkillService skillService)
+        public Menu(ICourseService courseService, IMaterialService materialService, ISkillService skillService)
         {
-            _userService = userService;
+            //_userService = userService;
             _courseService = courseService;
             _materialService = materialService;
             _skillService = skillService;

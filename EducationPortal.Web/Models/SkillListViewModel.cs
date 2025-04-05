@@ -1,11 +1,8 @@
 ﻿using Model;
 namespace EducationPortal.Web.Models
 {
-    public class SkillListViewModel
+    public class SkillListViewModel : UserPropertiesViewModel
     {
         public List<Skill> Skills { get; set; }
-        public string CurrentUserId { get; set; }
-        public bool IsTeacher { get; set; }
-
     }
 }

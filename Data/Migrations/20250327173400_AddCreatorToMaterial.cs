@@ -11,7 +11,7 @@ namespace Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "MatCreatorId",
+                name: "CreatorId",
                 table: "Materials",
                 type: "nvarchar(450)",
                 nullable: true);
@@ -19,12 +19,12 @@ namespace Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Materials_MatCreatorId",
                 table: "Materials",
-                column: "MatCreatorId");
+                column: "CreatorId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Materials_AspNetUsers_MatCreatorId",
                 table: "Materials",
-                column: "MatCreatorId",
+                column: "CreatorId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
@@ -42,7 +42,7 @@ namespace Data.Migrations
                 table: "Materials");
 
             migrationBuilder.DropColumn(
-                name: "MatCreatorId",
+                name: "CreatorId",
                 table: "Materials");
         }
     }

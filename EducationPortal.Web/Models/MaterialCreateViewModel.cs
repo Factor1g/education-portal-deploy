@@ -11,7 +11,7 @@ namespace EducationPortal.Web.Models
         public string Description { get; set; }
 
         [Required]
-        public string Type { get; set; } // "Video", "Book", "Article"
+        public string Type { get; set; }
 
         public int? Duration { get; set; }
         public string? Quality { get; set; }

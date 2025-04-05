@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Model;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using EducationPortal.Model;
 
 namespace EducationPortal.Web.Controllers
 {
@@ -36,10 +37,8 @@ namespace EducationPortal.Web.Controllers
             {
                 Courses = courses,
                 CurrentUserId = user.Id,
-                IsTeacher = await _userManager.IsInRoleAsync(user, "Teacher"),
-                SubscribedCourseIds = inProgress.Select(c => c.Id)
-                    .Union(completed.Select(c => c.Id))
-                    .ToList(),
+                IsTeacher = await _userManager.IsInRoleAsync(user, Roles.Teacher),                
+                SubscribedCourseIds = await _courseService.SubscribedCourseIds(user.Id),
             };
             return View(ViewModel);
         }
@@ -64,30 +63,22 @@ namespace EducationPortal.Web.Controllers
         {
             System.Console.WriteLine("POST Create hit");
             if (!ModelState.IsValid)
-            {
-                foreach (var key in ModelState.Keys)
-                {
-                    var errors = ModelState[key].Errors;
-                    foreach (var error in errors)
-                    {
-                        System.Console.WriteLine($"[Model Error] {key}: {error.ErrorMessage}");
-                    }
-                }
+            {                
                 await PopulateDropdowns(model);
                 return View(model);
             }
 
             var user = await _userManager.GetUserAsync(User);
             var userId = user?.Id;
+            var selectedMaterialIds = model.SelectedMaterialIds;
+            var selectedSkillIds= model.SelectedSkillIds;
 
             var course = new Course
             {
                 Name = model.Name,
-                Description = model.Description,
-                Materials = (await _materialService.GetAllMaterials())
-                    .Where(m => model.SelectedMaterialIds.Contains(m.Id)).ToList(),
-                Skills = (await _skillService.GetAllSkills())
-                    .Where(s => model.SelectedSkillIds.Contains(s.Id)).ToList(),                
+                Description = model.Description,                
+                Materials = await _materialService.GetSelectedMaterials(selectedMaterialIds),                
+                Skills = await _skillService.GetSelectedSkills(selectedSkillIds),
                 CreatorId = userId,
             };
 
@@ -157,25 +148,20 @@ namespace EducationPortal.Web.Controllers
         public async Task<IActionResult> Edit(CourseViewModel model)
         {
             if (!ModelState.IsValid)
-            {
+            {                
                 await PopulateDropdowns(model);
                 return View(model);
-            } 
-
-            var course = await _courseService.GetById(model.Id);
-            if (course == null)
-            {
-                return NotFound();
             }
 
-            course.Name = model.Name;
-            course.Description = model.Description;
-            course.Materials = (await _materialService.GetAllMaterials())
-                .Where(m => model.SelectedMaterialIds.Contains(m.Id)).ToList();
-            course.Skills = (await _skillService.GetAllSkills())
-                .Where(s => model.SelectedSkillIds.Contains(s.Id)).ToList();
+            var selectedMaterialIds = model.SelectedMaterialIds;
+            var selectedSkillIds = model.SelectedSkillIds;
+          
+            var updatedMaterials = await _materialService.GetSelectedMaterials(selectedMaterialIds);
+            var updatedSkills = await _skillService.GetSelectedSkills(selectedSkillIds);
+           
+            await _courseService.Update(model.Id, model.Name, model.Description, updatedMaterials, updatedSkills);
+            return RedirectToAction("Index");
 
-            await _courseService.Update(course);
             return RedirectToAction("Index");
         }
         
